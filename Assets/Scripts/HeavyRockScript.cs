@@ -7,7 +7,7 @@ public class HeavyRockScript : MonoBehaviour
     [SerializeField] private Rigidbody RockRigidbody;
     [SerializeField] [Range(1, 25)] private float throwForce;
     [SerializeField] [Range(1, 50)] private float explosionRadius;
-    [SerializeField] [Range(1, 50)] private float explosionForce;
+    [SerializeField] [Range(1, 500)] private float explosionForce;
     [SerializeField] [Range(1, 50)] private float explosionDamage;
     [SerializeField] private bool detonationOccured;
     [SerializeField] private GameObject explosionPrefab;
@@ -18,12 +18,13 @@ public class HeavyRockScript : MonoBehaviour
     void Start()
     {
         RockRigidbody = gameObject.GetComponent<Rigidbody>();
+        Destroy(gameObject, 5f);
         //RockRigidbody.AddForce(transform.up * throwForce / 5, ForceMode.Impulse);
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Environment") && !detonationOccured)
+        if (collision.gameObject.CompareTag("Environment") && !detonationOccured || collision.gameObject.CompareTag("Player"))
         {
             // KABOOM and stuff
             GameObject explosion = Instantiate(explosionPrefab, transform.position, transform.rotation);
@@ -42,6 +43,7 @@ public class HeavyRockScript : MonoBehaviour
                     if (targetRigidbodies != null && targetRigidbodies.gameObject.tag != "Projectile")
                     {
                         targetRigidbodies.AddExplosionForce(explosionForce, transform.position, explosionRadius, 1f, ForceMode.Impulse);
+                        //targetRigidbodies.AddForce(transform.up * explosionForce, ForceMode.Impulse);
                     }
                 
             }
