@@ -6,161 +6,154 @@ using Cinemachine;
 
 public class InputController : MonoBehaviour
 {
-    [SerializeField] [Range(0, 100)] private int health = 100;
+    [SerializeField] [Range(0, 100)] private int _health = 1;
+    [SerializeField] [Range(0f, 10f)] private float _groundDrag = 6f;
+    [SerializeField] [Range(0f, 10f)] private float _jumpStrength = 3f;
+    [SerializeField] [Range(0f, 1f)] private float _movementSpeed = 0.75f;
+    [SerializeField] [Range(5, 15)] private float _gravityModifier = 9.8f;
 
+    [SerializeField] public Transform zoomFollowObject;
+    [SerializeField] private Transform followObject;
+    [SerializeField] private GameObject playerBody;
+    [SerializeField] private Rigidbody playerRigidbody;
+    [SerializeField] private LayerMask layerMask;
+
+    // Cosmetics
+    [SerializeField] private CinemachineFreeLook _cineMachineCamera;
     [SerializeField] private ParticleSystem HoverParticles;
+    [SerializeField] private AudioSource playerAudioSource;
+    [SerializeField] private AudioClip hoveringSound;
+
+    [Range(0f, 20f)] public float hoveringPower = 20f;
+    [Range(0f, 20f)] public float maximumHoveringPower = 20f;
+
+    [SerializeField] private bool _isDead = false;
+    [SerializeField] private bool _hovering = false;
 
     public bool beingControlled;
     public bool canBeControlled;
-
-    private bool hovering = false;
-    public float hoveringPower = 20f;
-    public float maximumHoveringPower = 20f;
-
-    private CharacterController playerCharacterController;
-    private Rigidbody playerRigidbody;
-    [SerializeField] private GameObject playerBody;
-    [SerializeField] private CinemachineFreeLook _cineMachineCamera;
-    [SerializeField] private Camera MainCamera;
-    [SerializeField] private Transform followObject;
-
-    private Vector3 direction;
-    private Vector3 jumpDirection = new Vector3(0, 5, 0);
-    private Vector3 fallDirection = new Vector3(0, -5, 0);
-
     public bool onGround;
-    [SerializeField] [Range(5, 15)] private float gravityModifier;
-    private const float playerHeight = 2;
-    private float verticalMovement;
-    private float horizontalMovement;
 
-    [SerializeField] [Range(0f, 10f)] private float groundDrag = 6f;
-    [SerializeField] [Range(0f, 2f)] private float airDrag = 2f;
-    [SerializeField] [Range(0f, 10f)] private float jumpStrength;
-    [SerializeField] [Range(0f, 1f)] private float movementSpeed;
+    public Vector2 moveValue;
+    private Vector3 _jumpDirection = new Vector3(0, 5, 0);
 
-    [SerializeField] private LayerMask layerMask;
-
-    public Vector2 _moveValue;
-    // Start is called before the first frame update
     void Awake()
     {
         canBeControlled = true;
-        //playerCharacterController = gameObject.GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked;
         playerRigidbody = gameObject.GetComponent<Rigidbody>();
+        playerAudioSource = gameObject.GetComponent<AudioSource>();
     }
 
     public void Movement(InputAction.CallbackContext context)
     {
-        //Debug.Log("Moving");
-        _moveValue = context.ReadValue<Vector2>();
+        moveValue = context.ReadValue<Vector2>();
     }
 
     private void FixedUpdate()
     {
 
-        if (canBeControlled && beingControlled)
+        if (canBeControlled && beingControlled && !GameManager.actionHappening)
         {
-            var moveVector = new Vector3(_moveValue.x, 0, _moveValue.y);
+            var moveVector = new Vector3(moveValue.x, 0, moveValue.y);
 
             transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, Camera.main.transform.eulerAngles.y, transform.rotation.eulerAngles.z);
 
             if (onGround)
             {
-                playerRigidbody.AddForce((transform.right * moveVector.x + transform.forward * moveVector.z) * movementSpeed, ForceMode.Impulse);
+                playerRigidbody.AddForce((transform.right * moveVector.x + transform.forward * moveVector.z) * _movementSpeed, ForceMode.Impulse);
             }
             else
             {
-                playerRigidbody.AddForce((transform.right * moveVector.x + transform.forward * moveVector.z) * movementSpeed, ForceMode.Impulse);
+                playerRigidbody.AddForce((transform.right * moveVector.x + transform.forward * moveVector.z) * _movementSpeed, ForceMode.Impulse);
             }
         }
     }
 
     public void Jump()
     {
-        if (canBeControlled && beingControlled)
+        if (canBeControlled && beingControlled && !GameManager.actionHappening)
         {
             if (onGround)
             {
-                playerRigidbody.AddForce(jumpDirection * jumpStrength, ForceMode.Impulse);
+                playerRigidbody.AddForce(_jumpDirection * _jumpStrength, ForceMode.Impulse);
             }
         }
     }
 
     public void Hover(InputAction.CallbackContext context)
     {
-        if (canBeControlled && beingControlled)
+        if (canBeControlled && beingControlled && !GameManager.actionHappening)
         {
             if (context.phase == InputActionPhase.Performed)
             {
-                hovering = true;
+                playerAudioSource.clip = hoveringSound;
+                playerAudioSource.volume = 3f;
+                playerAudioSource.Play();
+                HoverParticles.Play();
+                _hovering = true;
             }
             else if (context.phase == InputActionPhase.Canceled)
             {
-                hovering = false;
+                playerAudioSource.Stop();
+                HoverParticles.Stop();
+                _hovering = false;
             }
         }
     }
 
     public void TakeDamage(int damage)
     {
-        if (health != 0)
+        if (_health != 0)
         {
-            health -= damage;
+            _health -= damage;
+            transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
         }
         else
         {
-            Destroy(gameObject);
+            Debug.Log("ACK!");
+            _isDead = true;
+            playerRigidbody.isKinematic = true;
+            playerBody.SetActive(false);
+            StartCoroutine(DeathCoroutine());
         }
     }
 
-    // Update is called once per frame
+    private IEnumerator DeathCoroutine()
+    {
+        yield return new WaitForSeconds(1);
+    }
+
     void Update()
     {
-        Debug.Log(hoveringPower);
-        //onGround = Physics.Raycast(playerRigidbody.gameObject.transform.position, Vector3.down, playerHeight / 2 + 0.2f);
-        
-        if (hovering && hoveringPower > 0f)
+        if (_hovering == true && hoveringPower > 0f && beingControlled && canBeControlled && !GameManager.actionHappening)
         {
-            HoverParticles.Play();
-            playerRigidbody.AddForce(jumpDirection * 0.03f, ForceMode.Impulse);
+            playerRigidbody.AddForce(_jumpDirection * 0.03f, ForceMode.Impulse);
             hoveringPower -= 0.03f;
         }
         else
         {
-            HoverParticles.Stop();
+
         }
 
-        if (hovering && hoveringPower < 0f)
+        if (_hovering && hoveringPower < 0f && beingControlled && canBeControlled && !GameManager.actionHappening)
         {
-            hovering = false;
+            _hovering = false;
             hoveringPower = 0f;
         }
 
-        //if (hovering == false && onGround && hoveringPower < maximumHoveringPower)
-        //{
-        //    hoveringPower += 0.03f;
-
-        //    if (hoveringPower >= maximumHoveringPower)
-        //    {
-        //        hoveringPower = maximumHoveringPower;
-        //    }
-        //}
-
-        if (playerRigidbody.velocity.y <= 0 && hovering == false)
+        if (playerRigidbody.velocity.y <= 0 && _hovering == false)
         {
-            playerRigidbody.velocity += Vector3.up * Physics.gravity.y * (gravityModifier - 1f) * Time.deltaTime;
+            playerRigidbody.velocity += Vector3.up * Physics.gravity.y * (_gravityModifier - 1f) * Time.deltaTime;
         }
 
         if (onGround == true)
         {
-            playerRigidbody.drag = groundDrag;
+            playerRigidbody.drag = _groundDrag;
         }
         else
         {
-            //playerRigidbody.drag = airDrag;
-            //playerRigidbody.AddForce(fallDirection * 0.015f, ForceMode.Impulse);
+
         }
     }
 }

@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 393860517677129564}
   - component: {fileID: -4429662088796538222}
   - component: {fileID: 7893784688866011854}
+  - component: {fileID: 9216059877161832855}
   m_Layer: 0
   m_Name: HeavyRockOrange
   m_TagString: Untagged
@@ -138,6 +139,8 @@ MonoBehaviour:
   detonationOccured: 0
   explosionPrefab: {fileID: 9000009998004431431, guid: bd08aa524e933914d8ea7641191aeafe, type: 3}
   playerController: {fileID: 0}
+  fireTrail: {fileID: 5308217097128745382}
+  fireParticles: {fileID: 7442149628126039327}
 --- !u!82 &7893784688866011854
 AudioSource:
   m_ObjectHideFlags: 0
@@ -234,6 +237,57 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!95 &9216059877161832855
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 393860517677129561}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 62035bd3565f8fb45b24d021d964a3cb, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!1 &9099995388388347613
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3320984478363715602}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3320984478363715602
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9099995388388347613}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5751217190854225469}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1148286469699387856
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -507,6 +561,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 726569625e7d4434185643b4cbd23415, type: 3}
+--- !u!198 &7442149628126039327 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 7541378584050650319, guid: 726569625e7d4434185643b4cbd23415, type: 3}
+  m_PrefabInstance: {fileID: 1148286469699387856}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7442149629629812582 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7541378583893249718, guid: 726569625e7d4434185643b4cbd23415, type: 3}
@@ -787,3 +846,8 @@ PrefabInstance:
       objectReference: {fileID: 10301, guid: 0000000000000000f000000000000000, type: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 06544775c190961419e0aa16efb6575b, type: 3}
+--- !u!198 &5308217097128745382 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 2938276446723703924, guid: 06544775c190961419e0aa16efb6575b, type: 3}
+  m_PrefabInstance: {fileID: 7020066798563139026}
+  m_PrefabAsset: {fileID: 0}

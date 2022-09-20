@@ -12,27 +12,27 @@ public class HeavyRockScript : MonoBehaviour
     [SerializeField] private bool detonationOccured;
     [SerializeField] private GameObject explosionPrefab;
     [SerializeField] private InputController playerController;
+
+    [SerializeField] private ParticleSystem fireTrail;
+    [SerializeField] private ParticleSystem fireParticles;
+
+
     private Quaternion rockRotation = Quaternion.Euler(1, 0, 0);
 
-    // Start is called before the first frame update
     void Start()
     {
-        RockRigidbody = gameObject.GetComponent<Rigidbody>();
+        RockRigidbody = gameObject.GetComponentInChildren<Rigidbody>();
         Destroy(gameObject, 5f);
-        //RockRigidbody.AddForce(transform.up * throwForce / 5, ForceMode.Impulse);
     }
 
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Environment") && !detonationOccured || collision.gameObject.CompareTag("Player"))
         {
-            // KABOOM and stuff
             GameObject explosion = Instantiate(explosionPrefab, transform.position, transform.rotation);
                 
             detonationOccured = true;
 
-            //playerController.GetComponent<InputController>().TakeDamage((int)explosionDamage);
-                
             Collider[] colliders = Physics.OverlapSphere(transform.position, explosionRadius);
                 
             foreach (Collider near in colliders)
@@ -43,7 +43,6 @@ public class HeavyRockScript : MonoBehaviour
                     if (targetRigidbodies != null && targetRigidbodies.gameObject.tag != "Projectile")
                     {
                         targetRigidbodies.AddExplosionForce(explosionForce, transform.position, explosionRadius, 1f, ForceMode.Impulse);
-                        //targetRigidbodies.AddForce(transform.up * explosionForce, ForceMode.Impulse);
                     }
                 
             }
@@ -72,16 +71,18 @@ public class HeavyRockScript : MonoBehaviour
                 
             }
 
-            Destroy(gameObject);
+            gameObject.GetComponent<MeshRenderer>().enabled = false;
+            gameObject.GetComponent<Rigidbody>().isKinematic = true;
+            fireTrail.Stop();
+            fireParticles.Stop();
+            Destroy(gameObject, 3f);
         }
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (RockRigidbody.velocity.y <= 0f)
         {
-            //RockRigidbody.velocity.y = new Vector3(RockRigidbody.velocity.x, Physics.gravity.magnitude, RockRigidbody.velocity.z);
             RockRigidbody.velocity += Vector3.up * Physics.gravity.y * (3f - 1) * Time.deltaTime;
         }
     }
