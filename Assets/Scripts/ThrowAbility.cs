@@ -73,15 +73,13 @@ public class ThrowAbility : MonoBehaviour
         CinemachineFreeLookCamera.Follow = heavyRock.gameObject.transform;
         CinemachineFreeLookCamera.LookAt = heavyRock.gameObject.transform;
 
-        heavyRock.GetComponent<Rigidbody>().AddForce(ShootPosition.transform.up * _throwForce, ForceMode.Impulse);
+        heavyRock.GetComponent<Rigidbody>().AddForce(ShootPosition.transform.forward * _throwForce, ForceMode.Impulse);
+        heavyRock.GetComponent<Rigidbody>().AddForce(ShootPosition.transform.up / 5 * _throwForce, ForceMode.Impulse);
 
         yield return new WaitForSeconds(5);
 
         GameManager.endTurn = true;
         GameManager.actionHappening = false;
-
-        CinemachineFreeLookCamera.Follow = FollowObject;
-        CinemachineFreeLookCamera.LookAt = LookObject;
         _throwingObject = false;
     }
 
@@ -97,6 +95,8 @@ public class ThrowAbility : MonoBehaviour
             _throwForce += _multiplier;
             _throwForce = Mathf.Clamp(_throwForce, 0, _maxThrowForce);
         }
+
+        ShootPosition.transform.rotation = Quaternion.Euler(Camera.main.transform.eulerAngles.x, Camera.main.transform.eulerAngles.y, Camera.main.transform.eulerAngles.z);
 
         if (GameManager.actionHappening)
         {

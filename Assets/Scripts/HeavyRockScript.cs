@@ -16,66 +16,80 @@ public class HeavyRockScript : MonoBehaviour
     [SerializeField] private ParticleSystem fireTrail;
     [SerializeField] private ParticleSystem fireParticles;
 
-
-    private Quaternion rockRotation = Quaternion.Euler(1, 0, 0);
-
-    void Start()
+    void Awake()
     {
         RockRigidbody = gameObject.GetComponentInChildren<Rigidbody>();
-        Destroy(gameObject, 5f);
+        StartCoroutine(SelfDestruct());
+        explosionDamage = 150f;
     }
 
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Environment") && !detonationOccured || collision.gameObject.CompareTag("Player"))
         {
-            GameObject explosion = Instantiate(explosionPrefab, transform.position, transform.rotation);
-                
-            detonationOccured = true;
+            Explosion();
+        }
+    }
 
-            Collider[] colliders = Physics.OverlapSphere(transform.position, explosionRadius);
-                
-            foreach (Collider near in colliders)
-                
+    private void Explosion()
+    {
+        GameObject explosion = Instantiate(explosionPrefab, transform.position, explosionPrefab.transform.rotation);
+
+        detonationOccured = true;
+
+        Collider[] colliders = Physics.OverlapSphere(transform.position, explosionRadius);
+
+        foreach (Collider near in colliders)
+
+        {
+            Rigidbody targetRigidbodies = near.GetComponent<Rigidbody>();
+
+            if (targetRigidbodies != null && targetRigidbodies.gameObject.tag != "Projectile")
             {
-                    Rigidbody targetRigidbodies = near.GetComponent<Rigidbody>();
-
-                    if (targetRigidbodies != null && targetRigidbodies.gameObject.tag != "Projectile")
-                    {
-                        targetRigidbodies.AddExplosionForce(explosionForce, transform.position, explosionRadius, 1f, ForceMode.Impulse);
-                    }
-                
+                targetRigidbodies.AddExplosionForce(explosionForce, transform.position, explosionRadius, 20f, ForceMode.Impulse);
             }
 
-                
-            var hitColliders = Physics.OverlapSphere(transform.position, explosionRadius);
-                
-            foreach (var hitCollider in hitColliders)
+        }
+
+
+        var hitColliders = Physics.OverlapSphere(transform.position, explosionRadius);
+
+        foreach (var hitCollider in hitColliders)
+        {
+
+            var targetHit = hitCollider.GetComponent<InputController>();
+
+            if (targetHit)
             {
 
-                var targetHit = hitCollider.GetComponent<InputController>();
-                    
-                if (targetHit)
-                {
-                        
-                    var closestPoint = hitCollider.ClosestPoint(transform.position);
-                        
-                    var distance = Vector3.Distance(closestPoint, transform.position);
+                var closestPoint = hitCollider.ClosestPoint(transform.position);
 
-                        
-                    var damage = Mathf.InverseLerp(explosionRadius, 0, distance);
+                var distance = Vector3.Distance(closestPoint, transform.position);
 
-                    targetHit.TakeDamage((int)explosionDamage);
 
-                }
-                
+                var explosionDamage = 150;
+
+                targetHit.TakeDamage((int)explosionDamage);
+
             }
 
-            gameObject.GetComponent<MeshRenderer>().enabled = false;
-            gameObject.GetComponent<Rigidbody>().isKinematic = true;
-            fireTrail.Stop();
-            fireParticles.Stop();
-            Destroy(gameObject, 3f);
+        }
+
+        gameObject.GetComponent<MeshRenderer>().enabled = false;
+        gameObject.GetComponent<Rigidbody>().isKinematic = true;
+        fireTrail.Stop();
+        fireParticles.Stop();
+        Destroy(gameObject, 3f);
+    }
+
+    private IEnumerator SelfDestruct()
+    {
+        yield return new WaitForSeconds(5f);
+
+        if (!detonationOccured)
+        {
+            Explosion();
+            Destroy(gameObject);
         }
     }
 
