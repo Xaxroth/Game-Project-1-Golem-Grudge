@@ -12,7 +12,8 @@ public class SliderController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        Player = gameObject.GetComponentInParent<InputController>();
+        playerHealth = gameObject.GetComponentInChildren<TextMeshProUGUI>();
     }
 
     // Update is called once per frame

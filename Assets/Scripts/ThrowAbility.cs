@@ -26,6 +26,8 @@ public class ThrowAbility : MonoBehaviour
     void Start()
     {
         AimTarget.transform.position = gameObject.GetComponent<InputController>().zoomFollowObject.transform.position;
+        //CinemachineZoomCamera = GameObject.FindGameObjectWithTag("ZoomCamera");
+        //CinemachineFreeLookCamera = CinemachineZoomCamera.GetComponent<CinemachineFreeLook>();
     }
 
     public void RockThrow(InputAction.CallbackContext context)
@@ -81,6 +83,11 @@ public class ThrowAbility : MonoBehaviour
         GameManager.endTurn = true;
         GameManager.actionHappening = false;
         _throwingObject = false;
+
+        if (gameObject.GetComponent<InputController>()._isDead)
+        {
+            gameObject.SetActive(false);
+        }
     }
 
     private void FixedUpdate()

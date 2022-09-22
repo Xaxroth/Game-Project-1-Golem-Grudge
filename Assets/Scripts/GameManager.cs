@@ -38,7 +38,6 @@ public class GameManager : MonoBehaviour
 
     void Awake()
     {
-        //redGolems = new List<GameObject>();
         if (gameStart)
         {
             playerTurn = 1;
@@ -87,23 +86,32 @@ public class GameManager : MonoBehaviour
     {
         if (playerTurn == 1)
         {
-            blueGolem[playerBlueGolems].gameObject.GetComponent<InputController>().beingControlled = false;
+            currentGolem.beingControlled = false;
+            currentGolem.hoveringPower = currentGolem.maximumHoveringPower;
 
-            FreeLookCamera.LookAt = redGolem[playerRedGolems].gameObject.transform;
-            FreeLookCamera.Follow = redGolem[playerRedGolems].gameObject.transform;
+            golemIndex++;
+            golemIndex %= redGolemList.Count;
+            currentGolem = redGolemList[golemIndex];
 
-            redGolem[playerRedGolems].gameObject.GetComponent<InputController>().beingControlled = true;
+            FreeLookCamera.LookAt = currentGolem.gameObject.transform;
+            FreeLookCamera.Follow = currentGolem.gameObject.transform;
+
+            currentGolem.beingControlled = true;
 
         }
         else if (playerTurn == 2)
         {
-            redGolem[playerRedGolems].gameObject.GetComponent<InputController>().beingControlled = false;
-            playerBlueGolems = 0;
+            currentGolem.beingControlled = false;
+            currentGolem.hoveringPower = currentGolem.maximumHoveringPower;
 
-            FreeLookCamera.LookAt = blueGolem[playerBlueGolems].gameObject.transform;
-            FreeLookCamera.Follow = blueGolem[playerBlueGolems].gameObject.transform;
+            golemIndex++;
+            golemIndex %= blueGolemList.Count;
+            currentGolem = blueGolemList[golemIndex];
 
-            blueGolem[playerBlueGolems].gameObject.GetComponent<InputController>().beingControlled = true;
+            FreeLookCamera.LookAt = currentGolem.gameObject.transform;
+            FreeLookCamera.Follow = currentGolem.gameObject.transform;
+
+            currentGolem.beingControlled = true;
         }
     }
 
@@ -157,6 +165,8 @@ public class GameManager : MonoBehaviour
             blueGolemList = allGolems.Where(o => o.playerNumber == 2).ToList();
 
             currentGolem = redGolemList[0];
+
+            currentGolem.beingControlled = true;
 
             listSorted = true;
         }

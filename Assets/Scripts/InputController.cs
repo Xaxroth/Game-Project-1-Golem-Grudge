@@ -155,18 +155,11 @@ public class InputController : MonoBehaviour
             playerRigidbody.isKinematic = true;
             playerBody.SetActive(false);
             gameObject.GetComponent<InputController>().enabled = false;
-            StartCoroutine(DeathCoroutine());
         }
     }
 
-    private IEnumerator DeathCoroutine()
+    private void HoverCheck()
     {
-        yield return new WaitForSeconds(1);
-    }
-
-    void Update()
-    {
-
         if (_hovering == true && hoveringPower > 0f && beingControlled && canBeControlled && !GameManager.actionHappening)
         {
             playerRigidbody.AddForce(_jumpDirection * 0.03f, ForceMode.Impulse);
@@ -178,6 +171,16 @@ public class InputController : MonoBehaviour
             _hovering = false;
             hoveringPower = 0f;
         }
+
+        if (beingControlled == false)
+        {
+            _hovering = false;
+        }
+    }
+
+    void Update()
+    {
+        HoverCheck();
 
         if (playerRigidbody.velocity.y <= 0 && _hovering == false)
         {
