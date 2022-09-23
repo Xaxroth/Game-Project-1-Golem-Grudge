@@ -180,11 +180,14 @@ public class InputController : MonoBehaviour
 
     void Update()
     {
-        HoverCheck();
 
         if (playerRigidbody.velocity.y <= 0 && _hovering == false)
         {
             playerRigidbody.velocity += Vector3.up * Physics.gravity.y * (_gravityModifier - 1f) * Time.deltaTime;
         }
+
+        HoverCheck();
+
+        //transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x + 1, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
     }
 }

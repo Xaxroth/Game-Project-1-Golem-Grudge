@@ -66,10 +66,10 @@ public class HeavyRockScript : MonoBehaviour
 
                 var distance = Vector3.Distance(closestPoint, transform.position);
 
+                var explosionDamage = Mathf.InverseLerp(explosionRadius, 0, distance);
+                Debug.Log("ACK I DIED TO " + explosionDamage);
 
-                var explosionDamage = 150;
-
-                targetHit.TakeDamage((int)explosionDamage);
+                targetHit.TakeDamage((int)(explosionDamage * 100));
 
             }
 

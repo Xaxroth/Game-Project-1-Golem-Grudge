@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Cinemachine;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
@@ -25,6 +26,8 @@ public class GameManager : MonoBehaviour
 
     public List<InputController> redGolemList;
     public List<InputController> blueGolemList;
+    public List<InputController> greenGolemList;
+    public List<InputController> purpleGolemList;
 
     public List<InputController> allGolems;
 
@@ -32,6 +35,14 @@ public class GameManager : MonoBehaviour
     public static bool endTurn = false;
     public static bool gameStart = true;
     private bool listSorted = false;
+
+    private string[] players = new string[] { "Red", "Blue", "Green", "Purple" };
+
+    public TextMeshProUGUI winnerText;
+
+    [SerializeField] private GameObject gameOverObject;
+    [SerializeField] private GameObject victoryObject;
+    [SerializeField] private GameObject pauseObject;
 
     [SerializeField] public static int playerTurn = 1;
     [SerializeField] public static int turnCountdown = 31;
@@ -41,6 +52,7 @@ public class GameManager : MonoBehaviour
         if (gameStart)
         {
             playerTurn = 1;
+
             StartCoroutine(countDownTimer());
         }
     }
@@ -122,7 +134,7 @@ public class GameManager : MonoBehaviour
 
     public void SwitchGolem(InputAction.CallbackContext context)
     {
-        if (context.phase == InputActionPhase.Canceled)
+        if (context.phase == InputActionPhase.Canceled && !actionHappening)
         {
             if (playerTurn == 1)
             {
@@ -157,16 +169,72 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
+        InitializeGame();
+
+        if (blueGolemList.Count == 0)
+        {
+            winnerText.text = players[0].ToString();
+            gameOverObject.SetActive(true);
+        }
+
+        if (redGolemList.Count == 0)
+        {
+            winnerText.text = players[1].ToString();
+            gameOverObject.SetActive(true);
+        }
+
+        //if (pauseObject.activeInHierarchy)
+        //{
+        //    Time.timeScale = 0;
+        //}
+        //else
+        //{
+        //    Time.timeScale = 1;
+        //}
+    }
+
+    private void InitializeGame()
+    {
         if (allGolems.Count == maxGolems && !listSorted)
         {
             allGolems = allGolems.OrderBy(o => o.name).ToList();
-           
+
             redGolemList = allGolems.Where(o => o.playerNumber == 1).ToList();
             blueGolemList = allGolems.Where(o => o.playerNumber == 2).ToList();
+            greenGolemList = allGolems.Where(o => o.playerNumber == 3).ToList();
+            purpleGolemList = allGolems.Where(o => o.playerNumber == 4).ToList();
 
             currentGolem = redGolemList[0];
 
             currentGolem.beingControlled = true;
+
+            //greenGolemList[0].gameObject.SetActive(false);
+            //greenGolemList[1].gameObject.SetActive(false);
+            //greenGolemList[2].gameObject.SetActive(false);
+            //greenGolemList[3].gameObject.SetActive(false);
+
+            //purpleGolemList[0].gameObject.SetActive(false);
+            //purpleGolemList[1].gameObject.SetActive(false);
+            //purpleGolemList[2].gameObject.SetActive(false);
+            //purpleGolemList[3].gameObject.SetActive(false);
+
+            //if (numberOfPlayers == 3 || numberOfPlayers == 4)
+            //{
+            //    maxGolems = 12;
+            //    greenGolemList[0].gameObject.SetActive(true);
+            //    greenGolemList[1].gameObject.SetActive(true);
+            //    greenGolemList[2].gameObject.SetActive(true);
+            //    greenGolemList[3].gameObject.SetActive(true);
+            //}
+
+            //if (numberOfPlayers == 4)
+            //{
+            //    maxGolems = 16;
+            //    purpleGolemList[0].gameObject.SetActive(true);
+            //    purpleGolemList[1].gameObject.SetActive(true);
+            //    purpleGolemList[2].gameObject.SetActive(true);
+            //    purpleGolemList[3].gameObject.SetActive(true);
+            //}
 
             listSorted = true;
         }
