@@ -59,6 +59,9 @@ public class InputController : MonoBehaviour
         playerRigidbody = gameObject.GetComponent<Rigidbody>();
         playerAudioSource = gameObject.GetComponent<AudioSource>();
         playerRigidbody.drag = _groundDrag;
+
+        HoverParticles.Stop();
+        _hovering = false;
     }
 
     public void MovementListener(InputAction.CallbackContext context)
@@ -170,6 +173,11 @@ public class InputController : MonoBehaviour
         {
             _hovering = false;
             hoveringPower = 0f;
+        }
+
+        if (GameManager.actionHappening)
+        {
+            _hovering = false;
         }
 
         if (beingControlled == false)

@@ -89,6 +89,15 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Smash"",
+                    ""type"": ""Button"",
+                    ""id"": ""0f658539-4b39-4b99-8922-3cf83af25fe3"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -364,6 +373,17 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""ZoomIn"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3984c822-a722-4637-b160-aed7b7f06b74"",
+                    ""path"": ""<Keyboard>/#(F)"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Smash"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -958,6 +978,7 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
         m_Player_SwitchElemental = m_Player.FindAction("SwitchElemental", throwIfNotFound: true);
         m_Player_Hover = m_Player.FindAction("Hover", throwIfNotFound: true);
         m_Player_ZoomIn = m_Player.FindAction("ZoomIn", throwIfNotFound: true);
+        m_Player_Smash = m_Player.FindAction("Smash", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1036,6 +1057,7 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_SwitchElemental;
     private readonly InputAction m_Player_Hover;
     private readonly InputAction m_Player_ZoomIn;
+    private readonly InputAction m_Player_Smash;
     public struct PlayerActions
     {
         private @PlayerInputAction m_Wrapper;
@@ -1047,6 +1069,7 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
         public InputAction @SwitchElemental => m_Wrapper.m_Player_SwitchElemental;
         public InputAction @Hover => m_Wrapper.m_Player_Hover;
         public InputAction @ZoomIn => m_Wrapper.m_Player_ZoomIn;
+        public InputAction @Smash => m_Wrapper.m_Player_Smash;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1077,6 +1100,9 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
                 @ZoomIn.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnZoomIn;
                 @ZoomIn.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnZoomIn;
                 @ZoomIn.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnZoomIn;
+                @Smash.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSmash;
+                @Smash.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSmash;
+                @Smash.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSmash;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -1102,6 +1128,9 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
                 @ZoomIn.started += instance.OnZoomIn;
                 @ZoomIn.performed += instance.OnZoomIn;
                 @ZoomIn.canceled += instance.OnZoomIn;
+                @Smash.started += instance.OnSmash;
+                @Smash.performed += instance.OnSmash;
+                @Smash.canceled += instance.OnSmash;
             }
         }
     }
@@ -1265,6 +1294,7 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
         void OnSwitchElemental(InputAction.CallbackContext context);
         void OnHover(InputAction.CallbackContext context);
         void OnZoomIn(InputAction.CallbackContext context);
+        void OnSmash(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

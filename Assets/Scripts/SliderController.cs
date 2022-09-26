@@ -16,7 +16,7 @@ public class SliderController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        string[] names = new string[] { "Trapper", "Wraith", "Shape", "Nightmare", "Executioner", "Nemesis", "Blight", "Spirit", "Demo", "Cannibal", "Legion", "Plague", "Mastermind", "Oni" };
+        string[] names = new string[] { "Trapper", "Wraith", "Shape", "Nightmare", "Executioner", "Nemesis", "Blight", "Spirit", "Demo", "Cannibal", "Legion", "Plague", "Mastermind", "Oni", "Nurse", "Huntress", "Twins", "Onryo", "Dredge", "Ghostface", "Hillbilly", "Hag", "Doctor", "Clown", "Deathslinger", "Trickster", "Artist", "Cenobite", "Pig" };
         string randomName = names[Random.Range(0, names.Length)];
         Debug.Log(randomName);
         playerName.text = randomName;
