@@ -70,6 +70,7 @@ public class GameManager : MonoBehaviour
 
         if (turnCountdown == 0 || endTurn)
         {
+            StatusCheck();
             NewPlayer();
             ResetPlayer();
             StartCoroutine(countDownTimer());
@@ -100,11 +101,25 @@ public class GameManager : MonoBehaviour
         {
             case 1:
                 currentGolem.beingControlled = false;
-                currentGolem.hoveringPower = currentGolem.maximumHoveringPower;
+
+                if (redGolemList.Count == 0)
+                {
+                    NewPlayer();
+                    ResetPlayer();
+                    break;
+                }
 
                 golemIndex++;
                 golemIndex %= redGolemList.Count;
                 currentGolem = redGolemList[golemIndex];
+
+                for (int index = 0; index < redGolemList.Count; index++)
+                {
+                    redGolemList[index].hoveringPower = redGolemList[index].maximumHoveringPower;
+                    redGolemList[index]._startPosition = redGolemList[index].transform.position;
+                    redGolemList[index]._distanceMoved = 0;
+                    redGolemList[index].canMove = true;
+                }
 
                 FreeLookCamera.LookAt = currentGolem.gameObject.transform;
                 FreeLookCamera.Follow = currentGolem.gameObject.transform;
@@ -113,11 +128,25 @@ public class GameManager : MonoBehaviour
                 break;
             case 2:
                 currentGolem.beingControlled = false;
-                currentGolem.hoveringPower = currentGolem.maximumHoveringPower;
+
+                if (blueGolemList.Count == 0)
+                {
+                    NewPlayer();
+                    ResetPlayer();
+                    break;
+                }
 
                 golemIndex++;
                 golemIndex %= blueGolemList.Count;
                 currentGolem = blueGolemList[golemIndex];
+
+                for (int index = 0; index < redGolemList.Count; index++)
+                {
+                    blueGolemList[index].hoveringPower = blueGolemList[index].maximumHoveringPower;
+                    blueGolemList[index]._startPosition = blueGolemList[index].transform.position;
+                    blueGolemList[index]._distanceMoved = 0;
+                    blueGolemList[index].canMove = true;
+                }
 
                 FreeLookCamera.LookAt = currentGolem.gameObject.transform;
                 FreeLookCamera.Follow = currentGolem.gameObject.transform;
@@ -126,11 +155,25 @@ public class GameManager : MonoBehaviour
                 break;
             case 3:
                 currentGolem.beingControlled = false;
-                currentGolem.hoveringPower = currentGolem.maximumHoveringPower;
+
+                if (greenGolemList.Count == 0)
+                {
+                    NewPlayer();
+                    ResetPlayer();
+                    break;
+                }
 
                 golemIndex++;
                 golemIndex %= greenGolemList.Count;
                 currentGolem = greenGolemList[golemIndex];
+
+                for (int index = 0; index < redGolemList.Count; index++)
+                {
+                    greenGolemList[index].hoveringPower = greenGolemList[index].maximumHoveringPower;
+                    greenGolemList[index]._startPosition = greenGolemList[index].transform.position;
+                    greenGolemList[index]._distanceMoved = 0;
+                    greenGolemList[index].canMove = true;
+                }
 
                 FreeLookCamera.LookAt = currentGolem.gameObject.transform;
                 FreeLookCamera.Follow = currentGolem.gameObject.transform;
@@ -139,11 +182,25 @@ public class GameManager : MonoBehaviour
                 break;
             case 4:
                 currentGolem.beingControlled = false;
-                currentGolem.hoveringPower = currentGolem.maximumHoveringPower;
+
+                if (purpleGolemList.Count == 0)
+                {
+                    NewPlayer();
+                    ResetPlayer();
+                    break;
+                }
 
                 golemIndex++;
                 golemIndex %= purpleGolemList.Count;
                 currentGolem = purpleGolemList[golemIndex];
+
+                for (int index = 0; index < redGolemList.Count; index++)
+                {
+                    purpleGolemList[index].hoveringPower = purpleGolemList[index].maximumHoveringPower;
+                    purpleGolemList[index]._startPosition = purpleGolemList[index].transform.position;
+                    purpleGolemList[index]._distanceMoved = 0;
+                    purpleGolemList[index].canMove = true;
+                }
 
                 FreeLookCamera.LookAt = currentGolem.gameObject.transform;
                 FreeLookCamera.Follow = currentGolem.gameObject.transform;
@@ -298,35 +355,108 @@ public class GameManager : MonoBehaviour
     {
         InitializeGame();
 
-        if (blueGolemList.Count == 0)
-        {
-            winnerText.text = players[0].ToString();
-            actionHappening = true;
-            gameOverObject.SetActive(true);
-        }
-
-        if (redGolemList.Count == 0)
-        {
-            winnerText.text = players[1].ToString();
-            actionHappening = true;
-            gameOverObject.SetActive(true);
-        }
-
-        if (redGolemList.Count == 0 && blueGolemList.Count == 0)
-        {
-            winnerText.text = players[2].ToString();
-            actionHappening = true;
-            gameOverObject.SetActive(true);
-        }
-
-        //if (pauseObject.activeInHierarchy)
+        //if (blueGolemList.Count == 0)
         //{
-        //    Time.timeScale = 0;
+        //    winnerText.text = players[0].ToString();
+        //    actionHappening = true;
+        //    gameOverObject.SetActive(true);
         //}
-        //else
+
+        //if (redGolemList.Count == 0)
         //{
-        //    Time.timeScale = 1;
+        //    winnerText.text = players[1].ToString();
+        //    actionHappening = true;
+        //    gameOverObject.SetActive(true);
         //}
+
+        //if (numberOfPlayers == 3 && redGolemList.Count == 0 && blueGolemList.Count == 0)
+        //{
+        //    winnerText.text = players[2].ToString();
+        //    actionHappening = true;
+        //    gameOverObject.SetActive(true);
+        //}
+        //else if (numberOfPlayers == 4 && redGolemList.Count == 0 && blueGolemList.Count == 0 && purpleGolemList.Count == 0)
+        //{
+        //    winnerText.text = players[2].ToString();
+        //    actionHappening = true;
+        //    gameOverObject.SetActive(true);
+        //}
+
+        //if (redGolemList.Count == 0 && blueGolemList.Count == 0 && greenGolemList.Count == 0)
+        //{
+        //    winnerText.text = players[2].ToString();
+        //    actionHappening = true;
+        //    gameOverObject.SetActive(true);
+        //}
+    }
+
+    public void StatusCheck()
+    {
+        switch (numberOfPlayers)
+        {
+            case 2:
+                if (blueGolemList.Count == 0)
+                {
+                    winnerText.text = players[0].ToString();
+                    actionHappening = true;
+                    gameOverObject.SetActive(true);
+                }
+
+                if (redGolemList.Count == 0)
+                {
+                    winnerText.text = players[1].ToString();
+                    actionHappening = true;
+                    gameOverObject.SetActive(true);
+                }
+                break;
+            case 3:
+                if (blueGolemList.Count == 0 && greenGolemList.Count == 0)
+                {
+                    winnerText.text = players[0].ToString();
+                    actionHappening = true;
+                    gameOverObject.SetActive(true);
+                }
+                if (redGolemList.Count == 0 && greenGolemList.Count == 0)
+                {
+                    winnerText.text = players[1].ToString();
+                    actionHappening = true;
+                    gameOverObject.SetActive(true);
+                }
+                if (redGolemList.Count == 0 && blueGolemList.Count == 0)
+                {
+                    winnerText.text = players[2].ToString();
+                    actionHappening = true;
+                    gameOverObject.SetActive(true);
+                }
+                break;
+            case 4:
+                if (blueGolemList.Count == 0 && greenGolemList.Count == 0 && purpleGolemList.Count == 0)
+                {
+                    winnerText.text = players[0].ToString();
+                    actionHappening = true;
+                    gameOverObject.SetActive(true);
+                }
+                if (redGolemList.Count == 0 && greenGolemList.Count == 0 && purpleGolemList.Count == 0)
+                {
+                    winnerText.text = players[1].ToString();
+                    actionHappening = true;
+                    gameOverObject.SetActive(true);
+                }
+                if (redGolemList.Count == 0 && blueGolemList.Count == 0 && purpleGolemList.Count == 0)
+                {
+                    winnerText.text = players[2].ToString();
+                    actionHappening = true;
+                    gameOverObject.SetActive(true);
+                }
+                if (redGolemList.Count == 0 && greenGolemList.Count == 0 && purpleGolemList.Count == 0)
+                {
+                    winnerText.text = players[3].ToString();
+                    actionHappening = true;
+                    gameOverObject.SetActive(true);
+                }
+                break;
+
+        }
     }
 
     private void InitializeGame()

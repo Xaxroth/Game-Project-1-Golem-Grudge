@@ -34,12 +34,12 @@ public class ThrowAbility : MonoBehaviour
     {
         if (gameObject.GetComponent<InputController>().beingControlled)
         {
-            if (context.phase == InputActionPhase.Performed && !_throwingObject)
+            if (context.phase == InputActionPhase.Performed && !_throwingObject && !GameManager.actionHappening)
             {
                 _throwForce = 0;
                 _chargingThrow = true;
             }
-            else if (context.phase == InputActionPhase.Canceled && !_throwingObject)
+            else if (context.phase == InputActionPhase.Canceled && !_throwingObject && !GameManager.actionHappening)
             {
                 _chargingThrow = false;
                 StartCoroutine(RockThrowCoroutine());

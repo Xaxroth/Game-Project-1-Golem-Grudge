@@ -13,6 +13,11 @@ public class InputController : MonoBehaviour
     [SerializeField] [Range(0f, 1f)] private float _movementSpeed = 0.75f;
     [SerializeField] [Range(5, 15)] private float _gravityModifier = 9.8f;
 
+    public float _distanceMoved;
+    public Vector3 _startPosition;
+
+    public bool canMove;
+
     [SerializeField] private GameManager _gameManager;
 
     [SerializeField] public Transform zoomFollowObject;
@@ -35,6 +40,7 @@ public class InputController : MonoBehaviour
 
     [SerializeField] public bool _isDead = false;
     [SerializeField] private bool _hovering = false;
+    public bool punched = false;
     public int playerNumber = 1;
 
     private PlayerInputAction myInputActions;
@@ -60,7 +66,10 @@ public class InputController : MonoBehaviour
         playerAudioSource = gameObject.GetComponent<AudioSource>();
         playerRigidbody.drag = _groundDrag;
 
+        _startPosition = transform.position;
+
         HoverParticles.Stop();
+        canMove = true;
         _hovering = false;
     }
 
@@ -93,13 +102,23 @@ public class InputController : MonoBehaviour
 
             transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, Camera.main.transform.eulerAngles.y, transform.rotation.eulerAngles.z);
 
-            if (onGround)
+            if (canMove)
             {
-                playerRigidbody.AddForce((transform.right * moveVector.x + transform.forward * moveVector.z) * _movementSpeed, ForceMode.Impulse);
+                if (onGround)
+                {
+                    playerRigidbody.AddForce((transform.right * moveVector.x + transform.forward * moveVector.z) * _movementSpeed, ForceMode.Impulse);
+                }
+                else
+                {
+                    playerRigidbody.AddForce((transform.right * moveVector.x + transform.forward * moveVector.z) * _movementSpeed, ForceMode.Impulse);
+                }
             }
-            else
+
+            if (moveValue != new Vector2(0, 0) && beingControlled)
             {
-                playerRigidbody.AddForce((transform.right * moveVector.x + transform.forward * moveVector.z) * _movementSpeed, ForceMode.Impulse);
+                Debug.Log(_distanceMoved);
+
+                _distanceMoved += Vector3.Distance(transform.position, _startPosition);
             }
         }
     }
@@ -152,8 +171,7 @@ public class InputController : MonoBehaviour
 
             GameObject explosion = Instantiate(deathExplosion, transform.position, transform.rotation);
             playerAudioSource.PlayOneShot(deathSound);
-            Debug.Log("ACK! I AM DEAD!!");
-            
+
             _isDead = true;
             playerRigidbody.isKinematic = true;
             playerBody.SetActive(false);
@@ -184,18 +202,33 @@ public class InputController : MonoBehaviour
         {
             _hovering = false;
         }
+
+        if (punched)
+        {
+            playerRigidbody.drag = 0;
+        }
+        else
+        {
+            playerRigidbody.drag = 6;
+        }
     }
 
     void Update()
     {
 
+        if (_distanceMoved >= 10000)
+        {
+            canMove = false;
+            Debug.Log("FUCK YOU BALTIMORE");
+        }
+
         if (playerRigidbody.velocity.y <= 0 && _hovering == false)
         {
-            playerRigidbody.velocity += Vector3.up * Physics.gravity.y * (_gravityModifier - 1f) * Time.deltaTime;
+            
+            playerRigidbody.velocity += Vector3.up * Physics.gravity.y * (_gravityModifier) * Time.deltaTime;
         }
 
         HoverCheck();
 
-        //transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x + 1, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
     }
 }
