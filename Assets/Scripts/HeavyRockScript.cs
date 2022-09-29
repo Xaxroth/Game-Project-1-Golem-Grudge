@@ -4,23 +4,34 @@ using UnityEngine;
 
 public class HeavyRockScript : MonoBehaviour
 {
-    [SerializeField] private Rigidbody RockRigidbody;
+    [Header("Projectile Properties")]
     [SerializeField] [Range(1, 25)] private float throwForce;
     [SerializeField] [Range(1, 50)] private float explosionRadius;
     [SerializeField] [Range(1, 500)] private float explosionForce;
     [SerializeField] [Range(1, 50)] private float explosionDamage;
+
+    [Header("Logistics")]
     [SerializeField] private bool detonationOccured;
-    [SerializeField] private GameObject explosionPrefab;
+    [SerializeField] private Rigidbody RockRigidbody;
     [SerializeField] private InputController playerController;
 
+    [Header("Cosmetics")]
+    [SerializeField] private GameObject explosionPrefab;
     [SerializeField] private ParticleSystem fireTrail;
     [SerializeField] private ParticleSystem fireParticles;
 
-    void Awake()
+    private void Awake()
     {
         RockRigidbody = gameObject.GetComponentInChildren<Rigidbody>();
         StartCoroutine(SelfDestruct());
         explosionDamage = 150f;
+    }
+    private void Update()
+    {
+        if (RockRigidbody.velocity.y <= 0f)
+        {
+            RockRigidbody.velocity += Vector3.up * Physics.gravity.y * (3f - 1) * Time.deltaTime;
+        }
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -51,7 +62,6 @@ public class HeavyRockScript : MonoBehaviour
 
         }
 
-
         var hitColliders = Physics.OverlapSphere(transform.position, explosionRadius);
 
         foreach (var hitCollider in hitColliders)
@@ -67,7 +77,6 @@ public class HeavyRockScript : MonoBehaviour
                 var distance = Vector3.Distance(closestPoint, transform.position);
 
                 var explosionDamage = Mathf.InverseLerp(explosionRadius, 0, distance);
-                Debug.Log("ACK I DIED TO " + explosionDamage);
 
                 targetHit.TakeDamage((int)(explosionDamage * 100));
 
@@ -77,8 +86,10 @@ public class HeavyRockScript : MonoBehaviour
 
         gameObject.GetComponent<MeshRenderer>().enabled = false;
         gameObject.GetComponent<Rigidbody>().isKinematic = true;
+
         fireTrail.Stop();
         fireParticles.Stop();
+
         Destroy(gameObject, 3f);
     }
 
@@ -90,14 +101,6 @@ public class HeavyRockScript : MonoBehaviour
         {
             Explosion();
             Destroy(gameObject);
-        }
-    }
-
-    void Update()
-    {
-        if (RockRigidbody.velocity.y <= 0f)
-        {
-            RockRigidbody.velocity += Vector3.up * Physics.gravity.y * (3f - 1) * Time.deltaTime;
         }
     }
 }

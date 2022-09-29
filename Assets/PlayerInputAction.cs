@@ -98,6 +98,15 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""PauseGame"",
+                    ""type"": ""Button"",
+                    ""id"": ""5b6e0d90-2586-4140-8106-a1e8db8db9c1"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -384,6 +393,17 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""Smash"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a29554e4-77bf-462f-9896-48c0068540af"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""PauseGame"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -979,6 +999,7 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
         m_Player_Hover = m_Player.FindAction("Hover", throwIfNotFound: true);
         m_Player_ZoomIn = m_Player.FindAction("ZoomIn", throwIfNotFound: true);
         m_Player_Smash = m_Player.FindAction("Smash", throwIfNotFound: true);
+        m_Player_PauseGame = m_Player.FindAction("PauseGame", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1058,6 +1079,7 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Hover;
     private readonly InputAction m_Player_ZoomIn;
     private readonly InputAction m_Player_Smash;
+    private readonly InputAction m_Player_PauseGame;
     public struct PlayerActions
     {
         private @PlayerInputAction m_Wrapper;
@@ -1070,6 +1092,7 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
         public InputAction @Hover => m_Wrapper.m_Player_Hover;
         public InputAction @ZoomIn => m_Wrapper.m_Player_ZoomIn;
         public InputAction @Smash => m_Wrapper.m_Player_Smash;
+        public InputAction @PauseGame => m_Wrapper.m_Player_PauseGame;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1103,6 +1126,9 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
                 @Smash.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSmash;
                 @Smash.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSmash;
                 @Smash.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSmash;
+                @PauseGame.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPauseGame;
+                @PauseGame.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPauseGame;
+                @PauseGame.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPauseGame;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -1131,6 +1157,9 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
                 @Smash.started += instance.OnSmash;
                 @Smash.performed += instance.OnSmash;
                 @Smash.canceled += instance.OnSmash;
+                @PauseGame.started += instance.OnPauseGame;
+                @PauseGame.performed += instance.OnPauseGame;
+                @PauseGame.canceled += instance.OnPauseGame;
             }
         }
     }
@@ -1295,6 +1324,7 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
         void OnHover(InputAction.CallbackContext context);
         void OnZoomIn(InputAction.CallbackContext context);
         void OnSmash(InputAction.CallbackContext context);
+        void OnPauseGame(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

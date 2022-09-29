@@ -7,15 +7,38 @@ using TMPro;
 public class UITextScript : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI countDownText;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
+    [SerializeField] private GameObject redText;
+    [SerializeField] private GameObject blueText;
+    [SerializeField] private GameObject greenText;
+    [SerializeField] private GameObject purpleText;
+
     void Update()
     {
-        countDownText.text = GameManager.turnCountdown.ToString();
+        countDownText.text = GameManager.turnDuration.ToString();
+    }
+
+    public void TurnChecker()
+    {
+        redText.SetActive(false);
+        blueText.SetActive(false);
+        greenText.SetActive(false);
+        purpleText.SetActive(false);
+
+        switch (GameManager.playerTurn)
+        {
+            case 1:
+                redText.SetActive(true);
+                break;
+            case 2:
+                blueText.SetActive(true);
+                break;
+            case 3:
+                greenText.SetActive(true);
+                break;
+            case 4:
+                purpleText.SetActive(true);
+                break;
+        }
     }
 }

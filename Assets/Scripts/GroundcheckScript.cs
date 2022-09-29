@@ -7,16 +7,12 @@ public class GroundcheckScript : MonoBehaviour
 {
     [SerializeField] private InputController player;
 
-    void Start()
-    {
-
-    }
-
     private void OnTriggerStay(Collider other)
     {
         if (other.gameObject.CompareTag("Environment"))
         {
             player.onGround = true;
+            player.gameObject.GetComponent<Rigidbody>().drag = 6;
         }
     }
 

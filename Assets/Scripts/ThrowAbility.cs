@@ -6,12 +6,13 @@ using Cinemachine;
 
 public class ThrowAbility : MonoBehaviour
 {
+    [Header("Ability Values")]
+
     [SerializeField] [Range(1f, 50f)] private float _throwForce;
     [SerializeField] [Range(1f, 50f)] private float _maxThrowForce = 50;
     [SerializeField] [Range(0.01f, 1f)] private float _multiplier = 0.01f;
 
-    private bool _throwingObject;
-    private bool _chargingThrow;
+    [Header("Camera")]
 
     [SerializeField] private GameObject CinemachineZoomCamera;
     [SerializeField] private GameObject ShootObject;
@@ -23,14 +24,15 @@ public class ThrowAbility : MonoBehaviour
 
     [SerializeField] private CinemachineFreeLook CinemachineFreeLookCamera;
 
-    void Start()
+    private bool _throwingObject;
+    private bool _chargingThrow;
+
+    private void Start()
     {
         AimTarget.transform.position = gameObject.GetComponent<InputController>().zoomFollowObject.transform.position;
-        //CinemachineZoomCamera = GameObject.FindGameObjectWithTag("ZoomCamera");
-        //CinemachineFreeLookCamera = CinemachineZoomCamera.GetComponent<CinemachineFreeLook>();
     }
 
-    public void RockThrow(InputAction.CallbackContext context)
+    private void RockThrow(InputAction.CallbackContext context)
     {
         if (gameObject.GetComponent<InputController>().beingControlled)
         {
@@ -47,7 +49,7 @@ public class ThrowAbility : MonoBehaviour
         }
     }
 
-    public void ZoomIn(InputAction.CallbackContext context)
+    private void ZoomIn(InputAction.CallbackContext context)
     {
         if (context.phase == InputActionPhase.Performed && _chargingThrow == true)
         {
@@ -95,7 +97,7 @@ public class ThrowAbility : MonoBehaviour
         CinemachineZoomCamera.transform.position = AimTarget.transform.position;
     }
 
-    void Update()
+    private void Update()
     {
         if (_chargingThrow)
         {

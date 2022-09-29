@@ -6,31 +6,32 @@ using Cinemachine;
 
 public class SmashScript : MonoBehaviour
 {
-    //[SerializeField] [Range(1f, 50f)] private float _throwForce;
-    //[SerializeField] [Range(1f, 50f)] private float _maxThrowForce = 50;
-    //[SerializeField] [Range(0.01f, 1f)] private float _multiplier = 0.01f;
-
+    [Header("Ability Values")]
     [SerializeField] [Range(0, 100f)] private float punchForce = 100;
-    [SerializeField] [Range(0, 10f)] private float punchRadius = 10;
+    [SerializeField] [Range(0, 10f)] private float punchRadius = 4;
     [SerializeField] [Range(0, 10)] private int punchDamage = 50;
 
-    private bool _smashing;
-
-    [SerializeField] private GameObject CinemachineZoomCamera;
-    [SerializeField] private GameObject ExplosionPrefab;
-    [SerializeField] private GameObject ShootObject;
-
+    [Header("Cosmetics")]
     [SerializeField] private Animator playerAnimator;
     [SerializeField] private AudioSource playerAudioSource;
+
     [SerializeField] private AudioClip punchSound;
     [SerializeField] private AudioClip crowdCheerSound;
 
+    [SerializeField] private GameObject ExplosionPrefab;
+
+    [Header("Camera")]
     [SerializeField] private Transform ShootPosition;
     [SerializeField] private Transform FollowObject;
     [SerializeField] private Transform LookObject;
     [SerializeField] private Transform AimTarget;
 
+    [SerializeField] private GameObject ShootObject;
+    [SerializeField] private GameObject CinemachineZoomCamera;
+    
     [SerializeField] private CinemachineFreeLook CinemachineFreeLookCamera;
+
+    private bool _smashing;
 
     void Start()
     {
@@ -94,9 +95,10 @@ public class SmashScript : MonoBehaviour
 
         }
 
-        yield return new WaitForSeconds(1.3f);
-
         GameManager.endTurn = true;
+
+        yield return new WaitForSeconds(2f);
+
         GameManager.actionHappening = false;
 
         if (gameObject.GetComponent<InputController>()._isDead)

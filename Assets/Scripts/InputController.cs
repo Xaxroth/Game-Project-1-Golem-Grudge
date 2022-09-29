@@ -6,6 +6,16 @@ using Cinemachine;
 
 public class InputController : MonoBehaviour
 {
+    [Header("Logistics")]
+
+    [SerializeField] private LayerMask layerMask;
+    [SerializeField] private GameManager _gameManager;
+
+    private PlayerInputAction myInputActions;
+    public int playerNumber = 1;
+
+    [Header("Player Attributes")]
+
     [Range(0, 100)] public int health = 100;
     
     [SerializeField] [Range(0f, 10f)] private float _groundDrag = 6f;
@@ -13,64 +23,73 @@ public class InputController : MonoBehaviour
     [SerializeField] [Range(0f, 1f)] private float _movementSpeed = 0.75f;
     [SerializeField] [Range(5, 15)] private float _gravityModifier = 9.8f;
 
-    public float _distanceMoved;
-    public Vector3 _startPosition;
-
-    public bool canMove;
-
-    [SerializeField] private GameManager _gameManager;
-
-    [SerializeField] public Transform zoomFollowObject;
-    [SerializeField] private Transform followObject;
-    [SerializeField] private GameObject playerBody;
-    [SerializeField] private Rigidbody playerRigidbody;
-    [SerializeField] private LayerMask layerMask;
-
-    [SerializeField] private AudioClip deathSound;
-    [SerializeField] private GameObject deathExplosion;
-
-    // Cosmetics
-    [SerializeField] private CinemachineFreeLook _cineMachineCamera;
-    [SerializeField] private ParticleSystem HoverParticles;
-    [SerializeField] private AudioSource playerAudioSource;
-    [SerializeField] private AudioClip hoveringSound;
-
     [Range(0f, 20f)] public float hoveringPower = 20f;
     [Range(0f, 20f)] public float maximumHoveringPower = 20f;
 
-    [SerializeField] public bool _isDead = false;
-    [SerializeField] private bool _hovering = false;
+    [Header("Camera")]
+
+    [SerializeField] private Transform followObject;
+    [SerializeField] private CinemachineFreeLook _cineMachineCamera;
+
+    [Header("Components")]
+
+    public Transform zoomFollowObject;
+
+    [SerializeField] private Rigidbody playerRigidbody;
+    [SerializeField] private GameObject deathExplosion;
+    [SerializeField] private GameObject playerBody;
+
+
+    [Header("Cosmetics")]
+
+    [SerializeField] private ParticleSystem HoverParticles;
+
+    [SerializeField] private AudioSource playerAudioSource;
+    [SerializeField] private AudioClip hoveringSound;
+    [SerializeField] private AudioClip deathSound;
+
+    [Header("Conditions")]
+
     public bool punched = false;
-    public int playerNumber = 1;
-
-    private PlayerInputAction myInputActions;
-
     public bool beingControlled;
     public bool canBeControlled;
     public bool onGround;
+    public bool canMove;
+    public bool _isDead = false;
 
+    [SerializeField] private bool _hovering = false;
+
+    public float _distanceMoved;
     public Vector2 moveValue;
+    public Vector3 _startPosition;
     private Vector3 _jumpDirection = new Vector3(0, 5, 0);
 
     void Awake()
     {
+        Cursor.lockState = CursorLockMode.Locked;
+
         _gameManager = FindObjectOfType<GameManager>();
         _gameManager.allGolems.Add(this);
 
         myInputActions = new PlayerInputAction();
         myInputActions.Enable();
 
-        canBeControlled = true;
-        Cursor.lockState = CursorLockMode.Locked;
         playerRigidbody = gameObject.GetComponent<Rigidbody>();
         playerAudioSource = gameObject.GetComponent<AudioSource>();
+
         playerRigidbody.drag = _groundDrag;
-
         _startPosition = transform.position;
-
-        HoverParticles.Stop();
+        
+        canBeControlled = true;
         canMove = true;
         _hovering = false;
+
+        HoverParticles.Stop();
+    }
+
+    void Update()
+    {
+        Conditions();
     }
 
     public void MovementListener(InputAction.CallbackContext context)
@@ -116,8 +135,6 @@ public class InputController : MonoBehaviour
 
             if (moveValue != new Vector2(0, 0) && beingControlled)
             {
-                Debug.Log(_distanceMoved);
-
                 _distanceMoved += Vector3.Distance(transform.position, _startPosition);
             }
         }
@@ -133,12 +150,14 @@ public class InputController : MonoBehaviour
                 playerAudioSource.volume = 3f;
                 playerAudioSource.Play();
                 HoverParticles.Play();
+
                 _hovering = true;
             }
             else if (context.phase == InputActionPhase.Canceled)
             {
                 playerAudioSource.Stop();
                 HoverParticles.Stop();
+
                 _hovering = false;
             }
         }
@@ -148,7 +167,6 @@ public class InputController : MonoBehaviour
     {
         if (health > 0)
         {
-            Debug.Log("ACK! " + damage);
             health -= damage;
             transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
         }
@@ -160,16 +178,21 @@ public class InputController : MonoBehaviour
             switch (playerNumber)
             {
                 case 1:
-                    GameManager.amountOfRedGolemsLeft--;
                     _gameManager.redGolemList.Remove(this);
                     break;
                 case 2:
-                    GameManager.amountOfBlueGolemsLeft--;
                     _gameManager.blueGolemList.Remove(this);
+                    break;
+                case 3:
+                    _gameManager.greenGolemList.Remove(this);
+                    break;
+                case 4:
+                    _gameManager.purpleGolemList.Remove(this);
                     break;
             }
 
             GameObject explosion = Instantiate(deathExplosion, transform.position, transform.rotation);
+
             playerAudioSource.PlayOneShot(deathSound);
 
             _isDead = true;
@@ -179,8 +202,20 @@ public class InputController : MonoBehaviour
         }
     }
 
-    private void HoverCheck()
+    private void Conditions()
     {
+
+        if (_distanceMoved >= 10000)
+        {
+            canMove = false;
+        }
+
+        if (playerRigidbody.velocity.y <= 0 && _hovering == false)
+        {
+
+            playerRigidbody.velocity += Vector3.up * Physics.gravity.y * (_gravityModifier) * Time.deltaTime;
+        }
+
         if (_hovering == true && hoveringPower > 0f && beingControlled && canBeControlled && !GameManager.actionHappening)
         {
             playerRigidbody.AddForce(_jumpDirection * 0.03f, ForceMode.Impulse);
@@ -206,29 +241,11 @@ public class InputController : MonoBehaviour
         if (punched)
         {
             playerRigidbody.drag = 0;
+
         }
         else
         {
             playerRigidbody.drag = 6;
         }
-    }
-
-    void Update()
-    {
-
-        if (_distanceMoved >= 10000)
-        {
-            canMove = false;
-            Debug.Log("FUCK YOU BALTIMORE");
-        }
-
-        if (playerRigidbody.velocity.y <= 0 && _hovering == false)
-        {
-            
-            playerRigidbody.velocity += Vector3.up * Physics.gravity.y * (_gravityModifier) * Time.deltaTime;
-        }
-
-        HoverCheck();
-
     }
 }
