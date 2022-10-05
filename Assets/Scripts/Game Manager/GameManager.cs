@@ -9,7 +9,7 @@ using TMPro;
 public class GameManager : MonoBehaviour
 {
     [Header("Camera")]
-    [SerializeField] public CinemachineFreeLook FreeLookCamera;
+    [SerializeField] private CinemachineFreeLook FreeLookCamera;
 
     [Header("Player Controls")]
     public InputController currentGolem;
@@ -23,32 +23,34 @@ public class GameManager : MonoBehaviour
 
     public List<InputController> allGolems;
 
-    [SerializeField] private bool listSorted = false;
-
     [Header("User Interface")]
     private string[] players = new string[] { "Fire", "Spirit", "Life", "Death" };
 
-    private UITextScript UITextController;
+    [SerializeField] private UITextScript UITextController;
 
-    public TextMeshProUGUI winnerText;
+    [SerializeField] private TextMeshProUGUI winnerText;
 
     [SerializeField] private GameObject gameOverObject;
     [SerializeField] private GameObject victoryObject;
     [SerializeField] private GameObject pauseObject;
+
+    [SerializeField] private bool listSorted = false;
 
     public static int numberOfPlayers = 4;
     public static int maxGolems = 12;
     public static int playerTurn = 1;
     public static int turnDuration = 30;
     public static int maxTurnDuration = 30;
+
     public static bool actionHappening = false;
     public static bool endTurn = false;
     public static bool gameStart = true;
-
     public static bool gamePaused;
 
     private void Awake()
     {
+        ResetConditions();
+
         if (gameStart)
         {
             playerTurn = 1;
@@ -78,8 +80,8 @@ public class GameManager : MonoBehaviour
             StatusCheck();
             NewPlayer();
             ResetPlayer();
-            UITextController.TurnChecker();
             StartCoroutine(countDownTimer());
+            UITextController.TurnChecker();
         }
         else
         {
@@ -103,11 +105,13 @@ public class GameManager : MonoBehaviour
 
     public void ResetPlayer()
     {
+        currentGolem.beingControlled = false;
+
+        golemIndex++;
+
         switch (playerTurn)
         {
             case 1:
-                currentGolem.beingControlled = false;
-
                 if (redGolemList.Count == 0)
                 {
                     NewPlayer();
@@ -115,7 +119,6 @@ public class GameManager : MonoBehaviour
                     break;
                 }
 
-                golemIndex++;
                 golemIndex %= redGolemList.Count;
                 currentGolem = redGolemList[golemIndex];
 
@@ -126,15 +129,8 @@ public class GameManager : MonoBehaviour
                     redGolemList[index]._distanceMoved = 0;
                     redGolemList[index].canMove = true;
                 }
-
-                FreeLookCamera.LookAt = currentGolem.gameObject.transform;
-                FreeLookCamera.Follow = currentGolem.gameObject.transform;
-
-                currentGolem.beingControlled = true;
                 break;
             case 2:
-                currentGolem.beingControlled = false;
-
                 if (blueGolemList.Count == 0)
                 {
                     NewPlayer();
@@ -142,7 +138,6 @@ public class GameManager : MonoBehaviour
                     break;
                 }
 
-                golemIndex++;
                 golemIndex %= blueGolemList.Count;
                 currentGolem = blueGolemList[golemIndex];
 
@@ -153,15 +148,8 @@ public class GameManager : MonoBehaviour
                     blueGolemList[index]._distanceMoved = 0;
                     blueGolemList[index].canMove = true;
                 }
-
-                FreeLookCamera.LookAt = currentGolem.gameObject.transform;
-                FreeLookCamera.Follow = currentGolem.gameObject.transform;
-
-                currentGolem.beingControlled = true;
                 break;
             case 3:
-                currentGolem.beingControlled = false;
-
                 if (greenGolemList.Count == 0)
                 {
                     NewPlayer();
@@ -169,7 +157,6 @@ public class GameManager : MonoBehaviour
                     break;
                 }
 
-                golemIndex++;
                 golemIndex %= greenGolemList.Count;
                 currentGolem = greenGolemList[golemIndex];
 
@@ -180,15 +167,8 @@ public class GameManager : MonoBehaviour
                     greenGolemList[index]._distanceMoved = 0;
                     greenGolemList[index].canMove = true;
                 }
-
-                FreeLookCamera.LookAt = currentGolem.gameObject.transform;
-                FreeLookCamera.Follow = currentGolem.gameObject.transform;
-
-                currentGolem.beingControlled = true;
                 break;
             case 4:
-                currentGolem.beingControlled = false;
-
                 if (purpleGolemList.Count == 0)
                 {
                     NewPlayer();
@@ -196,7 +176,6 @@ public class GameManager : MonoBehaviour
                     break;
                 }
 
-                golemIndex++;
                 golemIndex %= purpleGolemList.Count;
                 currentGolem = purpleGolemList[golemIndex];
 
@@ -207,14 +186,13 @@ public class GameManager : MonoBehaviour
                     purpleGolemList[index]._distanceMoved = 0;
                     purpleGolemList[index].canMove = true;
                 }
-
-                FreeLookCamera.LookAt = currentGolem.gameObject.transform;
-                FreeLookCamera.Follow = currentGolem.gameObject.transform;
-
-                currentGolem.beingControlled = true;
                 break;
-
         }
+
+        FreeLookCamera.LookAt = currentGolem.gameObject.transform;
+        FreeLookCamera.Follow = currentGolem.gameObject.transform;
+
+        currentGolem.beingControlled = true;
     }
 
     public void PauseGame(InputAction.CallbackContext context)
@@ -247,25 +225,23 @@ public class GameManager : MonoBehaviour
             currentGolem.beingControlled = false;
             currentGolem.hoveringPower = currentGolem.maximumHoveringPower;
 
+            golemIndex++;
+
             switch (playerTurn)
             {
                 case 1:
-                    golemIndex++;
                     golemIndex %= redGolemList.Count;
                     currentGolem = redGolemList[golemIndex];
                     break;
                 case 2:
-                    golemIndex++;
                     golemIndex %= blueGolemList.Count;
                     currentGolem = blueGolemList[golemIndex];
                     break;
                 case 3:
-                    golemIndex++;
                     golemIndex %= greenGolemList.Count;
                     currentGolem = greenGolemList[golemIndex];
                     break;
                 case 4:
-                    golemIndex++;
                     golemIndex %= purpleGolemList.Count;
                     currentGolem = purpleGolemList[golemIndex];
                     break;
@@ -399,7 +375,26 @@ public class GameManager : MonoBehaviour
                 }
             }
 
+            AudioListener.volume = 1;
+
+            Time.timeScale = 1;
+            pauseObject.SetActive(false);
+            gamePaused = false;
+
             listSorted = true;
         }
     }
+
+    private void ResetConditions()
+    {
+        maxGolems = 12;
+        playerTurn = 1;
+        turnDuration = 30;
+        maxTurnDuration = 30;
+
+        actionHappening = false;
+        endTurn = false;
+        gameStart = true;
+        gamePaused = false;
+}
 }

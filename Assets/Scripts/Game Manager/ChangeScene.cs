@@ -26,17 +26,11 @@ public class ChangeScene : MonoBehaviour
                 break;
         }
 
-        Debug.Log("number of players: " + GameManager.numberOfPlayers);
         SceneManager.LoadScene(0);
     }
 
     public void ExitApplication()
     {
         Application.Quit();
-    }
-
-    public void HandleInputData(int value)
-    {
-        
     }
 }
