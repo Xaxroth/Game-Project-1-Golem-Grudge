@@ -131,16 +131,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb71e0724306a09448146695bb8ed305, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RockRigidbody: {fileID: 0}
-  throwForce: 25
-  explosionRadius: 10
-  explosionForce: 50
-  explosionDamage: 25
-  detonationOccured: 0
-  explosionPrefab: {fileID: 9000009998004431431, guid: 7c8a60e73f791f8478b4144260f976e2, type: 3}
-  playerController: {fileID: 0}
-  fireTrail: {fileID: 5308217097128745382}
-  fireParticles: {fileID: 7442149628126039327}
+  _throwForce: 0
+  _explosionRadius: 15
+  _explosionForce: 25
+  _explosionDamage: 150
+  _detonationOccured: 0
+  _RockRigidbody: {fileID: 0}
+  _PlayerController: {fileID: 0}
+  _ExplosionPrefab: {fileID: 9000009998004431431, guid: 7c8a60e73f791f8478b4144260f976e2, type: 3}
+  _FireTrail: {fileID: 5308217097128745382}
+  _FireParticles: {fileID: 7442149628126039327}
 --- !u!82 &7893784688866011854
 AudioSource:
   m_ObjectHideFlags: 0

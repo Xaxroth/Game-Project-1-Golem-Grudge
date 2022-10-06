@@ -8,7 +8,7 @@ public class KillPlayerScript : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            other.gameObject.GetComponent<InputController>().TakeDamage(250);
+            other.gameObject.GetComponent<InputController>().TakeDamage(other.gameObject.GetComponent<InputController>().health);
         }
     }
 }

@@ -5,14 +5,19 @@ using UnityEngine.InputSystem;
 
 public class GroundcheckScript : MonoBehaviour
 {
-    [SerializeField] private InputController player;
+    [SerializeField] private InputController _Player;
+
+    private void Awake()
+    {
+        _Player = GetComponentInParent<InputController>();
+    }
 
     private void OnTriggerStay(Collider other)
     {
         if (other.gameObject.CompareTag("Environment"))
         {
-            player.onGround = true;
-            player.gameObject.GetComponent<Rigidbody>().drag = 6;
+            _Player.onGround = true;
+            _Player.gameObject.GetComponent<Rigidbody>().drag = 6;
         }
     }
 
@@ -20,7 +25,7 @@ public class GroundcheckScript : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Environment"))
         {
-            player.onGround = false;
+            _Player.onGround = false;
         }
     }
 }

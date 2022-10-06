@@ -1,25 +1,23 @@
-using System.Collections;
-using System.Collections.Generic;
+using Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Cinemachine;
 
 public class InputController : MonoBehaviour
 {
     [Header("Logistics")]
 
-    [SerializeField] private LayerMask layerMask;
-    [SerializeField] private GameManager _gameManager;
+    [SerializeField] private GameManager _GameManager;
 
-    private PlayerInputAction myInputActions;
+    [SerializeField] private PlayerInputAction _MyInputActions;
+
     public int playerNumber = 1;
 
     [Header("Player Attributes")]
 
     [Range(0, 100)] public int health = 100;
     
-    [SerializeField] [Range(0f, 10f)] private float _groundDrag = 6f;
-    [SerializeField] [Range(0f, 10f)] private float _jumpStrength = 3f;
+    [SerializeField] [Range(0f, 10f)] private float _groundDrag = 1f;
+    [SerializeField] [Range(0f, 10f)] private float _jumpStrength = 10f;
     [SerializeField] [Range(0f, 1f)] private float _movementSpeed = 0.75f;
     [SerializeField] [Range(5, 15)] private float _gravityModifier = 9.8f;
 
@@ -28,27 +26,29 @@ public class InputController : MonoBehaviour
 
     [Header("Camera")]
 
-    [SerializeField] private Transform followObject;
-    [SerializeField] private CinemachineFreeLook _cineMachineCamera;
+    [SerializeField] private Transform _FollowObject;
+    [SerializeField] private CinemachineFreeLook _CinemachineCamera;
 
     [Header("Components")]
 
     public Transform zoomFollowObject;
 
-    [SerializeField] private Rigidbody playerRigidbody;
-    [SerializeField] private GameObject deathExplosion;
-    [SerializeField] private GameObject playerBody;
+    [SerializeField] private Rigidbody _PlayerRigidbody;
+    [SerializeField] private GameObject _PlayerBody;
 
 
     [Header("Cosmetics")]
 
-    [SerializeField] private ParticleSystem HoverParticles;
+    [SerializeField] private ParticleSystem _HoverParticles;
+    [SerializeField] private GameObject _DeathExplosion;
 
-    [SerializeField] private AudioSource playerAudioSource;
-    [SerializeField] private AudioClip hoveringSound;
-    [SerializeField] private AudioClip deathSound;
+    [SerializeField] private AudioSource _PlayerAudioSource;
+    [SerializeField] private AudioClip _HoveringSound;
+    [SerializeField] private AudioClip _DeathSound;
 
     [Header("Conditions")]
+
+    [SerializeField] private bool _hovering = false;
 
     public bool punched = false;
     public bool beingControlled;
@@ -56,8 +56,6 @@ public class InputController : MonoBehaviour
     public bool onGround;
     public bool canMove;
     public bool _isDead = false;
-
-    [SerializeField] private bool _hovering = false;
 
     public float _distanceMoved;
     public Vector2 moveValue;
@@ -68,23 +66,25 @@ public class InputController : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.Locked;
 
-        _gameManager = FindObjectOfType<GameManager>();
-        _gameManager.allGolems.Add(this);
+        _GameManager = FindObjectOfType<GameManager>();
+        _GameManager.AllGolems.Add(this);
 
-        myInputActions = new PlayerInputAction();
-        myInputActions.Enable();
+        _MyInputActions = new PlayerInputAction();
+        _MyInputActions.Enable();
 
-        playerRigidbody = gameObject.GetComponent<Rigidbody>();
-        playerAudioSource = gameObject.GetComponent<AudioSource>();
+        _PlayerRigidbody = gameObject.GetComponent<Rigidbody>();
+        _PlayerAudioSource = gameObject.GetComponent<AudioSource>();
 
-        playerRigidbody.drag = _groundDrag;
+        _CinemachineCamera = GameObject.FindGameObjectWithTag("CinemachineMainCamera").GetComponent<CinemachineFreeLook>();
+
+        _PlayerRigidbody.drag = _groundDrag;
         _startPosition = transform.position;
         
         canBeControlled = true;
         canMove = true;
         _hovering = false;
 
-        HoverParticles.Stop();
+        _HoverParticles.Stop();
     }
 
     void Update()
@@ -108,7 +108,7 @@ public class InputController : MonoBehaviour
         {
             if (onGround)
             {
-                playerRigidbody.AddForce(_jumpDirection * _jumpStrength, ForceMode.Impulse);
+                _PlayerRigidbody.AddForce(_jumpDirection * _jumpStrength, ForceMode.Impulse);
             }
         }
     }
@@ -118,18 +118,18 @@ public class InputController : MonoBehaviour
         if (canBeControlled && beingControlled && !GameManager.actionHappening)
         {
             var moveVector = new Vector3(moveValue.x, 0, moveValue.y);
-
+            Debug.Log("movevector" + moveVector);
             transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, Camera.main.transform.eulerAngles.y, transform.rotation.eulerAngles.z);
 
             if (canMove)
-            { 
+            {
                 if (onGround)
                 {
-                    playerRigidbody.AddForce((transform.right * moveVector.x + transform.forward * moveVector.z) * _movementSpeed, ForceMode.Impulse);
+                    _PlayerRigidbody.AddForce((transform.right * moveVector.x + transform.forward * moveVector.z) * _movementSpeed, ForceMode.Impulse);
                 }
                 else
                 {
-                    playerRigidbody.AddForce((transform.right * moveVector.x + transform.forward * moveVector.z) * _movementSpeed, ForceMode.Impulse);
+                    _PlayerRigidbody.AddForce((transform.right * moveVector.x + transform.forward * moveVector.z) * _movementSpeed, ForceMode.Impulse);
                 }
             }
 
@@ -146,17 +146,13 @@ public class InputController : MonoBehaviour
         {   
             if (context.phase == InputActionPhase.Performed)
             {
-                playerAudioSource.clip = hoveringSound;
-                playerAudioSource.volume = 3f;
-                playerAudioSource.Play();
-                HoverParticles.Play();
+                _HoverParticles.Play();
 
                 _hovering = true;
             }
             else if (context.phase == InputActionPhase.Canceled)
             {
-                playerAudioSource.Stop();
-                HoverParticles.Stop();
+                _HoverParticles.Stop();
 
                 _hovering = false;
             }
@@ -173,31 +169,31 @@ public class InputController : MonoBehaviour
 
         if (health <= 0 && !_isDead)
         {
-            _gameManager.allGolems.Remove(this);
+            _GameManager.AllGolems.Remove(this);
 
             switch (playerNumber)
             {
                 case 1:
-                    _gameManager.redGolemList.Remove(this);
+                    _GameManager.RedGolemList.Remove(this);
                     break;
                 case 2:
-                    _gameManager.blueGolemList.Remove(this);
+                    _GameManager.BlueGolemList.Remove(this);
                     break;
                 case 3:
-                    _gameManager.greenGolemList.Remove(this);
+                    _GameManager.GreenGolemList.Remove(this);
                     break;
                 case 4:
-                    _gameManager.purpleGolemList.Remove(this);
+                    _GameManager.PurpleGolemList.Remove(this);
                     break;
             }
 
-            GameObject explosion = Instantiate(deathExplosion, transform.position, transform.rotation);
+            GameObject explosion = Instantiate(_DeathExplosion, transform.position, transform.rotation);
 
-            playerAudioSource.PlayOneShot(deathSound);
+            _PlayerAudioSource.PlayOneShot(_DeathSound);
 
             _isDead = true;
-            playerRigidbody.isKinematic = true;
-            playerBody.SetActive(false);
+            _PlayerRigidbody.isKinematic = true;
+            _PlayerBody.SetActive(false);
             gameObject.GetComponent<InputController>().enabled = false;
         }
     }
@@ -210,15 +206,15 @@ public class InputController : MonoBehaviour
             canMove = false;
         }
 
-        if (playerRigidbody.velocity.y <= 0 && _hovering == false)
+        if (_PlayerRigidbody.velocity.y <= 0 && _hovering == false)
         {
 
-            playerRigidbody.velocity += Vector3.up * Physics.gravity.y * (_gravityModifier) * Time.deltaTime;
+            _PlayerRigidbody.velocity += Vector3.up * Physics.gravity.y * (_gravityModifier) * Time.deltaTime;
         }
 
         if (_hovering == true && hoveringPower > 0f && beingControlled && canBeControlled && !GameManager.actionHappening)
         {
-            playerRigidbody.AddForce(_jumpDirection * 0.03f, ForceMode.Impulse);
+            _PlayerRigidbody.AddForce(_jumpDirection * 0.03f, ForceMode.Impulse);
             hoveringPower -= 0.03f;
         }
 
@@ -240,12 +236,12 @@ public class InputController : MonoBehaviour
 
         if (punched)
         {
-            playerRigidbody.drag = 0;
+            _PlayerRigidbody.drag = 0;
 
         }
         else
         {
-            playerRigidbody.drag = 6;
+            _PlayerRigidbody.drag = 6;
         }
     }
 }

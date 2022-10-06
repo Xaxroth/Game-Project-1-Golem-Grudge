@@ -14,22 +14,23 @@ public class ThrowAbility : MonoBehaviour
 
     [Header("Camera")]
 
-    [SerializeField] private GameObject CinemachineZoomCamera;
-    [SerializeField] private GameObject ShootObject;
+    [SerializeField] private GameObject _CinemachineZoomCamera;
+    [SerializeField] private GameObject _ShootObject;
 
-    [SerializeField] private Transform ShootPosition;
-    [SerializeField] private Transform FollowObject;
-    [SerializeField] private Transform LookObject;
-    [SerializeField] private Transform AimTarget;
+    [SerializeField] private Transform _ShootPosition;
+    [SerializeField] private Transform _FollowObject;
+    [SerializeField] private Transform _LookObject;
+    [SerializeField] private Transform _AimTarget;
 
-    [SerializeField] private CinemachineFreeLook CinemachineFreeLookCamera;
+    [SerializeField] private CinemachineFreeLook _CinemachineFreeLookCamera;
 
-    private bool _throwingObject;
-    private bool _chargingThrow;
+    [SerializeField] private bool _throwingObject;
+    [SerializeField] private bool _chargingThrow;
 
-    private void Start()
+    private void Awake()
     {
-        AimTarget.transform.position = gameObject.GetComponent<InputController>().zoomFollowObject.transform.position;
+        _AimTarget.transform.position = gameObject.GetComponent<InputController>().zoomFollowObject.transform.position;
+        _CinemachineFreeLookCamera = GameObject.FindGameObjectWithTag("CinemachineMainCamera").GetComponent<CinemachineFreeLook>();
     }
 
     private void RockThrow(InputAction.CallbackContext context)
@@ -53,32 +54,32 @@ public class ThrowAbility : MonoBehaviour
     {
         if (context.phase == InputActionPhase.Performed && _chargingThrow == true)
         {
-            CinemachineZoomCamera.SetActive(true);
-            CinemachineZoomCamera.GetComponent<CinemachineFreeLook>().Follow = gameObject.GetComponent<InputController>().zoomFollowObject;
-            CinemachineZoomCamera.GetComponent<CinemachineFreeLook>().LookAt = gameObject.GetComponent<InputController>().zoomFollowObject;
+            _CinemachineZoomCamera.SetActive(true);
+            _CinemachineZoomCamera.GetComponent<CinemachineFreeLook>().Follow = gameObject.GetComponent<InputController>().zoomFollowObject;
+            _CinemachineZoomCamera.GetComponent<CinemachineFreeLook>().LookAt = gameObject.GetComponent<InputController>().zoomFollowObject;
         }
         else if (context.phase == InputActionPhase.Canceled && _chargingThrow == true)
         {
-            CinemachineZoomCamera.SetActive(false);
+            _CinemachineZoomCamera.SetActive(false);
         }
     }
 
     private IEnumerator RockThrowCoroutine()
     {
-        FollowObject = CinemachineFreeLookCamera.Follow;
-        LookObject = CinemachineFreeLookCamera.LookAt;
+        _FollowObject = _CinemachineFreeLookCamera.Follow;
+        _LookObject = _CinemachineFreeLookCamera.LookAt;
 
         GameManager.actionHappening = true;
 
         _throwingObject = true;
 
-        GameObject heavyRock = Instantiate(ShootObject, ShootPosition.transform.position, ShootPosition.transform.rotation);
+        GameObject heavyRock = Instantiate(_ShootObject, _ShootPosition.transform.position, _ShootPosition.transform.rotation);
 
-        CinemachineFreeLookCamera.Follow = heavyRock.gameObject.transform;
-        CinemachineFreeLookCamera.LookAt = heavyRock.gameObject.transform;
+        _CinemachineFreeLookCamera.Follow = heavyRock.gameObject.transform;
+        _CinemachineFreeLookCamera.LookAt = heavyRock.gameObject.transform;
 
-        heavyRock.GetComponent<Rigidbody>().AddForce(ShootPosition.transform.forward * _throwForce, ForceMode.Impulse);
-        heavyRock.GetComponent<Rigidbody>().AddForce(ShootPosition.transform.up / 5 * _throwForce, ForceMode.Impulse);
+        heavyRock.GetComponent<Rigidbody>().AddForce(_ShootPosition.transform.forward * _throwForce, ForceMode.Impulse);
+        heavyRock.GetComponent<Rigidbody>().AddForce(_ShootPosition.transform.up / 5 * _throwForce, ForceMode.Impulse);
 
         yield return new WaitForSeconds(5);
 
@@ -94,7 +95,7 @@ public class ThrowAbility : MonoBehaviour
 
     private void FixedUpdate()
     {
-        CinemachineZoomCamera.transform.position = AimTarget.transform.position;
+        _CinemachineZoomCamera.transform.position = _AimTarget.transform.position;
     }
 
     private void Update()
@@ -105,11 +106,11 @@ public class ThrowAbility : MonoBehaviour
             _throwForce = Mathf.Clamp(_throwForce, 0, _maxThrowForce);
         }
 
-        ShootPosition.transform.rotation = Quaternion.Euler(Camera.main.transform.eulerAngles.x, Camera.main.transform.eulerAngles.y, Camera.main.transform.eulerAngles.z);
+        _ShootPosition.transform.rotation = Quaternion.Euler(Camera.main.transform.eulerAngles.x, Camera.main.transform.eulerAngles.y, Camera.main.transform.eulerAngles.z);
 
         if (GameManager.actionHappening)
         {
-            CinemachineZoomCamera.SetActive(false);
+            _CinemachineZoomCamera.SetActive(false);
         }
     }
 }

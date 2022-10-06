@@ -6,38 +6,38 @@ using TMPro;
 
 public class UITextScript : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI countDownText;
+    [SerializeField] private TextMeshProUGUI _CountDownText;
 
-    [SerializeField] private GameObject redText;
-    [SerializeField] private GameObject blueText;
-    [SerializeField] private GameObject greenText;
-    [SerializeField] private GameObject purpleText;
+    [SerializeField] private GameObject _RedText;
+    [SerializeField] private GameObject _BlueText;
+    [SerializeField] private GameObject _GreenText;
+    [SerializeField] private GameObject _PurpleText;
 
     void Update()
     {
-        countDownText.text = GameManager.turnDuration.ToString();
+        _CountDownText.text = GameManager.turnDuration.ToString();
     }
 
     public void TurnChecker()
     {
-        redText.SetActive(false);
-        blueText.SetActive(false);
-        greenText.SetActive(false);
-        purpleText.SetActive(false);
+        _RedText.SetActive(false);
+        _BlueText.SetActive(false);
+        _GreenText.SetActive(false);
+        _PurpleText.SetActive(false);
 
         switch (GameManager.playerTurn)
         {
             case 1:
-                redText.SetActive(true);
+                _RedText.SetActive(true);
                 break;
             case 2:
-                blueText.SetActive(true);
+                _BlueText.SetActive(true);
                 break;
             case 3:
-                greenText.SetActive(true);
+                _GreenText.SetActive(true);
                 break;
             case 4:
-                purpleText.SetActive(true);
+                _PurpleText.SetActive(true);
                 break;
         }
     }

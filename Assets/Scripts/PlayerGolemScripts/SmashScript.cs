@@ -7,36 +7,29 @@ using Cinemachine;
 public class SmashScript : MonoBehaviour
 {
     [Header("Ability Values")]
-    [SerializeField] [Range(0, 100f)] private float punchForce = 100;
-    [SerializeField] [Range(0, 10f)] private float punchRadius = 4;
-    [SerializeField] [Range(0, 10)] private int punchDamage = 50;
+    [SerializeField] [Range(0, 100f)] private float _punchForce = 100;
+    [SerializeField] [Range(0, 10f)] private float _punchRadius = 4;
+    [SerializeField] [Range(0, 10)] private int _punchDamage = 50;
 
     [Header("Cosmetics")]
-    [SerializeField] private Animator playerAnimator;
-    [SerializeField] private AudioSource playerAudioSource;
+    [SerializeField] private Animator _PlayerAnimator;
+    [SerializeField] private AudioSource _PlayerAudioSource;
 
-    [SerializeField] private AudioClip punchSound;
-    [SerializeField] private AudioClip crowdCheerSound;
+    [SerializeField] private AudioClip _PunchSound;
+    [SerializeField] private AudioClip _CrowdCheerSound;
 
-    [SerializeField] private GameObject ExplosionPrefab;
+    [SerializeField] private GameObject _ExplosionPrefab;
 
-    [Header("Camera")]
-    [SerializeField] private Transform ShootPosition;
-    [SerializeField] private Transform FollowObject;
-    [SerializeField] private Transform LookObject;
-    [SerializeField] private Transform AimTarget;
-
-    [SerializeField] private GameObject ShootObject;
-    [SerializeField] private GameObject CinemachineZoomCamera;
+    [SerializeField] private GameObject _CinemachineZoomCamera;
     
-    [SerializeField] private CinemachineFreeLook CinemachineFreeLookCamera;
+    [SerializeField] private CinemachineFreeLook _CinemachineFreeLookCamera;
 
-    private bool _smashing;
+    [SerializeField] private bool _smashing;
 
     void Start()
     {
-        playerAnimator = gameObject.GetComponent<Animator>();
-        playerAudioSource = gameObject.GetComponent<AudioSource>();
+        _PlayerAnimator = gameObject.GetComponent<Animator>();
+        _PlayerAudioSource = gameObject.GetComponent<AudioSource>();
     }
 
     public void Smash(InputAction.CallbackContext context)
@@ -45,7 +38,7 @@ public class SmashScript : MonoBehaviour
         {
             if (context.phase == InputActionPhase.Performed)
             {
-                playerAnimator.SetBool("Punch", true);
+                _PlayerAnimator.SetBool("Punch", true);
                 StartCoroutine(SmashCoroutine());
             }
         }
@@ -53,16 +46,16 @@ public class SmashScript : MonoBehaviour
 
     private IEnumerator SmashCoroutine()
     {
-        playerAudioSource.PlayOneShot(punchSound);
+        _PlayerAudioSource.PlayOneShot(_PunchSound);
 
         GameManager.actionHappening = true;
         _smashing = true;
 
         yield return new WaitForSeconds(1.7f);
 
-        playerAnimator.SetBool("Punch", false);
+        _PlayerAnimator.SetBool("Punch", false);
 
-        Collider[] colliders = Physics.OverlapSphere(transform.position, punchRadius);
+        Collider[] colliders = Physics.OverlapSphere(transform.position, _punchRadius);
 
         foreach (Collider near in colliders)
 
@@ -74,17 +67,17 @@ public class SmashScript : MonoBehaviour
             {
                 if (targetRigidbodies != gameObject.GetComponent<Rigidbody>())
                 {
-                    targetInputControllers.TakeDamage(punchDamage);
+                    targetInputControllers.TakeDamage(_punchDamage);
                     targetInputControllers.punched = true;
 
                     targetRigidbodies.AddForce(gameObject.transform.forward * 20, ForceMode.Impulse);
                     targetRigidbodies.AddForce(gameObject.transform.up * 20, ForceMode.Impulse);
 
-                    GameObject explosion = Instantiate(ExplosionPrefab, targetRigidbodies.gameObject.transform.position, transform.rotation);
+                    GameObject explosion = Instantiate(_ExplosionPrefab, targetRigidbodies.gameObject.transform.position, transform.rotation);
 
                     yield return new WaitForSeconds(0.5f);
 
-                    playerAudioSource.PlayOneShot(crowdCheerSound, 0.5f);
+                    _PlayerAudioSource.PlayOneShot(_CrowdCheerSound, 0.5f);
 
                     yield return new WaitForSeconds(1.5f);
 

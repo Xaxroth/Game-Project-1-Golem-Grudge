@@ -7,6 +7,7 @@ TagManager:
   - Environment
   - CameraFollowObject
   - ZoomCamera
+  - CinemachineMainCamera
   layers:
   - Default
   - TransparentFX

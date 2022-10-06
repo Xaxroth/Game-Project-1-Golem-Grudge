@@ -9,32 +9,32 @@ using TMPro;
 public class GameManager : MonoBehaviour
 {
     [Header("Camera")]
-    [SerializeField] private CinemachineFreeLook FreeLookCamera;
+    [SerializeField] private CinemachineFreeLook _FreeLookCamera;
 
     [Header("Player Controls")]
-    public InputController currentGolem;
+    public InputController CurrentGolem;
 
-    public int golemIndex;
+    [SerializeField] private int _golemIndex;
 
-    public List<InputController> redGolemList;
-    public List<InputController> blueGolemList;
-    public List<InputController> greenGolemList;
-    public List<InputController> purpleGolemList;
+    public List<InputController> RedGolemList;
+    public List<InputController> BlueGolemList;
+    public List<InputController> GreenGolemList;
+    public List<InputController> PurpleGolemList;
 
-    public List<InputController> allGolems;
+    public List<InputController> AllGolems;
 
     [Header("User Interface")]
-    private string[] players = new string[] { "Fire", "Spirit", "Life", "Death" };
+    private string[] _players = new string[] { "Fire", "Spirit", "Life", "Death" };
 
     [SerializeField] private UITextScript UITextController;
 
-    [SerializeField] private TextMeshProUGUI winnerText;
+    [SerializeField] private TextMeshProUGUI _WinnerText;
 
-    [SerializeField] private GameObject gameOverObject;
-    [SerializeField] private GameObject victoryObject;
-    [SerializeField] private GameObject pauseObject;
+    [SerializeField] private GameObject _GameOverObject;
+    [SerializeField] private GameObject _VictoryObject;
+    [SerializeField] private GameObject _PauseObject;
 
-    [SerializeField] private bool listSorted = false;
+    [SerializeField] private bool _listSorted = false;
 
     public static int numberOfPlayers = 4;
     public static int maxGolems = 12;
@@ -105,94 +105,94 @@ public class GameManager : MonoBehaviour
 
     public void ResetPlayer()
     {
-        currentGolem.beingControlled = false;
+        CurrentGolem.beingControlled = false;
 
-        golemIndex++;
+        _golemIndex++;
 
         switch (playerTurn)
         {
             case 1:
-                if (redGolemList.Count == 0)
+                if (RedGolemList.Count == 0)
                 {
                     NewPlayer();
                     ResetPlayer();
                     break;
                 }
 
-                golemIndex %= redGolemList.Count;
-                currentGolem = redGolemList[golemIndex];
+                _golemIndex %= RedGolemList.Count;
+                CurrentGolem = RedGolemList[_golemIndex];
 
-                for (int index = 0; index < redGolemList.Count; index++)
+                for (int index = 0; index < RedGolemList.Count; index++)
                 {
-                    redGolemList[index].hoveringPower = redGolemList[index].maximumHoveringPower;
-                    redGolemList[index]._startPosition = redGolemList[index].transform.position;
-                    redGolemList[index]._distanceMoved = 0;
-                    redGolemList[index].canMove = true;
+                    RedGolemList[index].hoveringPower = RedGolemList[index].maximumHoveringPower;
+                    RedGolemList[index]._startPosition = RedGolemList[index].transform.position;
+                    RedGolemList[index]._distanceMoved = 0;
+                    RedGolemList[index].canMove = true;
                 }
                 break;
             case 2:
-                if (blueGolemList.Count == 0)
+                if (BlueGolemList.Count == 0)
                 {
                     NewPlayer();
                     ResetPlayer();
                     break;
                 }
 
-                golemIndex %= blueGolemList.Count;
-                currentGolem = blueGolemList[golemIndex];
+                _golemIndex %= BlueGolemList.Count;
+                CurrentGolem = BlueGolemList[_golemIndex];
 
-                for (int index = 0; index < blueGolemList.Count; index++)
+                for (int index = 0; index < BlueGolemList.Count; index++)
                 {
-                    blueGolemList[index].hoveringPower = blueGolemList[index].maximumHoveringPower;
-                    blueGolemList[index]._startPosition = blueGolemList[index].transform.position;
-                    blueGolemList[index]._distanceMoved = 0;
-                    blueGolemList[index].canMove = true;
+                    BlueGolemList[index].hoveringPower = BlueGolemList[index].maximumHoveringPower;
+                    BlueGolemList[index]._startPosition = BlueGolemList[index].transform.position;
+                    BlueGolemList[index]._distanceMoved = 0;
+                    BlueGolemList[index].canMove = true;
                 }
                 break;
             case 3:
-                if (greenGolemList.Count == 0)
+                if (GreenGolemList.Count == 0)
                 {
                     NewPlayer();
                     ResetPlayer();
                     break;
                 }
 
-                golemIndex %= greenGolemList.Count;
-                currentGolem = greenGolemList[golemIndex];
+                _golemIndex %= GreenGolemList.Count;
+                CurrentGolem = GreenGolemList[_golemIndex];
 
-                for (int index = 0; index < greenGolemList.Count; index++)
+                for (int index = 0; index < GreenGolemList.Count; index++)
                 {
-                    greenGolemList[index].hoveringPower = greenGolemList[index].maximumHoveringPower;
-                    greenGolemList[index]._startPosition = greenGolemList[index].transform.position;
-                    greenGolemList[index]._distanceMoved = 0;
-                    greenGolemList[index].canMove = true;
+                    GreenGolemList[index].hoveringPower = GreenGolemList[index].maximumHoveringPower;
+                    GreenGolemList[index]._startPosition = GreenGolemList[index].transform.position;
+                    GreenGolemList[index]._distanceMoved = 0;
+                    GreenGolemList[index].canMove = true;
                 }
                 break;
             case 4:
-                if (purpleGolemList.Count == 0)
+                if (PurpleGolemList.Count == 0)
                 {
                     NewPlayer();
                     ResetPlayer();
                     break;
                 }
 
-                golemIndex %= purpleGolemList.Count;
-                currentGolem = purpleGolemList[golemIndex];
+                _golemIndex %= PurpleGolemList.Count;
+                CurrentGolem = PurpleGolemList[_golemIndex];
 
-                for (int index = 0; index < purpleGolemList.Count; index++)
+                for (int index = 0; index < PurpleGolemList.Count; index++)
                 {
-                    purpleGolemList[index].hoveringPower = purpleGolemList[index].maximumHoveringPower;
-                    purpleGolemList[index]._startPosition = purpleGolemList[index].transform.position;
-                    purpleGolemList[index]._distanceMoved = 0;
-                    purpleGolemList[index].canMove = true;
+                    PurpleGolemList[index].hoveringPower = PurpleGolemList[index].maximumHoveringPower;
+                    PurpleGolemList[index]._startPosition = PurpleGolemList[index].transform.position;
+                    PurpleGolemList[index]._distanceMoved = 0;
+                    PurpleGolemList[index].canMove = true;
                 }
                 break;
         }
 
-        FreeLookCamera.LookAt = currentGolem.gameObject.transform;
-        FreeLookCamera.Follow = currentGolem.gameObject.transform;
+        _FreeLookCamera.LookAt = CurrentGolem.gameObject.transform;
+        _FreeLookCamera.Follow = CurrentGolem.gameObject.transform;
 
-        currentGolem.beingControlled = true;
+        CurrentGolem.beingControlled = true;
     }
 
     public void PauseGame(InputAction.CallbackContext context)
@@ -204,7 +204,7 @@ public class GameManager : MonoBehaviour
                 AudioListener.volume = 0;
 
                 Time.timeScale = 0;
-                pauseObject.SetActive(true);
+                _PauseObject.SetActive(true);
                 gamePaused = true;
             }
             else
@@ -212,7 +212,7 @@ public class GameManager : MonoBehaviour
                 AudioListener.volume = 1;
 
                 Time.timeScale = 1;
-                pauseObject.SetActive(false);
+                _PauseObject.SetActive(false);
                 gamePaused = false;
             }
         }
@@ -222,35 +222,35 @@ public class GameManager : MonoBehaviour
     {
         if (context.phase == InputActionPhase.Canceled && !actionHappening)
         {
-            currentGolem.beingControlled = false;
-            currentGolem.hoveringPower = currentGolem.maximumHoveringPower;
+            CurrentGolem.beingControlled = false;
+            CurrentGolem.hoveringPower = CurrentGolem.maximumHoveringPower;
 
-            golemIndex++;
+            _golemIndex++;
 
             switch (playerTurn)
             {
                 case 1:
-                    golemIndex %= redGolemList.Count;
-                    currentGolem = redGolemList[golemIndex];
+                    _golemIndex %= RedGolemList.Count;
+                    CurrentGolem = RedGolemList[_golemIndex];
                     break;
                 case 2:
-                    golemIndex %= blueGolemList.Count;
-                    currentGolem = blueGolemList[golemIndex];
+                    _golemIndex %= BlueGolemList.Count;
+                    CurrentGolem = BlueGolemList[_golemIndex];
                     break;
                 case 3:
-                    golemIndex %= greenGolemList.Count;
-                    currentGolem = greenGolemList[golemIndex];
+                    _golemIndex %= GreenGolemList.Count;
+                    CurrentGolem = GreenGolemList[_golemIndex];
                     break;
                 case 4:
-                    golemIndex %= purpleGolemList.Count;
-                    currentGolem = purpleGolemList[golemIndex];
+                    _golemIndex %= PurpleGolemList.Count;
+                    CurrentGolem = PurpleGolemList[_golemIndex];
                     break;
             }
 
-            FreeLookCamera.LookAt = currentGolem.gameObject.transform;
-            FreeLookCamera.Follow = currentGolem.gameObject.transform;
+            _FreeLookCamera.LookAt = CurrentGolem.gameObject.transform;
+            _FreeLookCamera.Follow = CurrentGolem.gameObject.transform;
 
-            currentGolem.beingControlled = true;
+            CurrentGolem.beingControlled = true;
         }
     }
 
@@ -259,64 +259,64 @@ public class GameManager : MonoBehaviour
         switch (numberOfPlayers)
         {
             case 2:
-                if (blueGolemList.Count == 0)
+                if (BlueGolemList.Count == 0)
                 {
-                    winnerText.text = players[0].ToString();
+                    _WinnerText.text = _players[0].ToString();
                     actionHappening = true;
-                    gameOverObject.SetActive(true);
+                    _GameOverObject.SetActive(true);
                 }
 
-                if (redGolemList.Count == 0)
+                if (RedGolemList.Count == 0)
                 {
-                    winnerText.text = players[1].ToString();
+                    _WinnerText.text = _players[1].ToString();
                     actionHappening = true;
-                    gameOverObject.SetActive(true);
+                    _GameOverObject.SetActive(true);
                 }
                 break;
             case 3:
-                if (blueGolemList.Count == 0 && greenGolemList.Count == 0)
+                if (BlueGolemList.Count == 0 && GreenGolemList.Count == 0)
                 {
-                    winnerText.text = players[0].ToString();
+                    _WinnerText.text = _players[0].ToString();
                     actionHappening = true;
-                    gameOverObject.SetActive(true);
+                    _GameOverObject.SetActive(true);
                 }
-                if (redGolemList.Count == 0 && greenGolemList.Count == 0)
+                if (RedGolemList.Count == 0 && GreenGolemList.Count == 0)
                 {
-                    winnerText.text = players[1].ToString();
+                    _WinnerText.text = _players[1].ToString();
                     actionHappening = true;
-                    gameOverObject.SetActive(true);
+                    _GameOverObject.SetActive(true);
                 }
-                if (redGolemList.Count == 0 && blueGolemList.Count == 0)
+                if (RedGolemList.Count == 0 && BlueGolemList.Count == 0)
                 {
-                    winnerText.text = players[2].ToString();
+                    _WinnerText.text = _players[2].ToString();
                     actionHappening = true;
-                    gameOverObject.SetActive(true);
+                    _GameOverObject.SetActive(true);
                 }
                 break;
             case 4:
-                if (blueGolemList.Count == 0 && greenGolemList.Count == 0 && purpleGolemList.Count == 0)
+                if (BlueGolemList.Count == 0 && GreenGolemList.Count == 0 && PurpleGolemList.Count == 0)
                 {
-                    winnerText.text = players[0].ToString();
+                    _WinnerText.text = _players[0].ToString();
                     actionHappening = true;
-                    gameOverObject.SetActive(true);
+                    _GameOverObject.SetActive(true);
                 }
-                if (redGolemList.Count == 0 && greenGolemList.Count == 0 && purpleGolemList.Count == 0)
+                if (RedGolemList.Count == 0 && GreenGolemList.Count == 0 && PurpleGolemList.Count == 0)
                 {
-                    winnerText.text = players[1].ToString();
+                    _WinnerText.text = _players[1].ToString();
                     actionHappening = true;
-                    gameOverObject.SetActive(true);
+                    _GameOverObject.SetActive(true);
                 }
-                if (redGolemList.Count == 0 && blueGolemList.Count == 0 && purpleGolemList.Count == 0)
+                if (RedGolemList.Count == 0 && BlueGolemList.Count == 0 && PurpleGolemList.Count == 0)
                 {
-                    winnerText.text = players[2].ToString();
+                    _WinnerText.text = _players[2].ToString();
                     actionHappening = true;
-                    gameOverObject.SetActive(true);
+                    _GameOverObject.SetActive(true);
                 }
-                if (redGolemList.Count == 0 && greenGolemList.Count == 0 && blueGolemList.Count == 0)
+                if (RedGolemList.Count == 0 && GreenGolemList.Count == 0 && BlueGolemList.Count == 0)
                 {
-                    winnerText.text = players[3].ToString();
+                    _WinnerText.text = _players[3].ToString();
                     actionHappening = true;
-                    gameOverObject.SetActive(true);
+                    _GameOverObject.SetActive(true);
                 }
                 break;
         }
@@ -324,39 +324,39 @@ public class GameManager : MonoBehaviour
 
     private void InitializeGame()
     {
-        if (!listSorted)
+        if (!_listSorted)
         {
             UITextController = gameObject.GetComponent<UITextScript>();
             UITextController.TurnChecker();
 
-            allGolems = allGolems.OrderBy(o => o.name).ToList();
+            AllGolems = AllGolems.OrderBy(o => o.name).ToList();
 
-            redGolemList = allGolems.Where(o => o.playerNumber == 1).ToList();
-            greenGolemList = allGolems.Where(o => o.playerNumber == 3).ToList();
-            blueGolemList = allGolems.Where(o => o.playerNumber == 2).ToList();
-            purpleGolemList = allGolems.Where(o => o.playerNumber == 4).ToList();
+            RedGolemList = AllGolems.Where(o => o.playerNumber == 1).ToList();
+            GreenGolemList = AllGolems.Where(o => o.playerNumber == 3).ToList();
+            BlueGolemList = AllGolems.Where(o => o.playerNumber == 2).ToList();
+            PurpleGolemList = AllGolems.Where(o => o.playerNumber == 4).ToList();
 
-            currentGolem = redGolemList[0];
+            CurrentGolem = RedGolemList[0];
 
-            currentGolem.beingControlled = true;
+            CurrentGolem.beingControlled = true;
 
-            for (int index = 0; index < greenGolemList.Count; index++)
+            for (int index = 0; index < GreenGolemList.Count; index++)
             {
-                greenGolemList[index].gameObject.SetActive(false);
+                GreenGolemList[index].gameObject.SetActive(false);
             }
 
-            for (int index = 0; index < purpleGolemList.Count; index++)
+            for (int index = 0; index < PurpleGolemList.Count; index++)
             {
-                purpleGolemList[index].gameObject.SetActive(false);
+                PurpleGolemList[index].gameObject.SetActive(false);
             }
 
             if (numberOfPlayers == 3)
             {
                 maxGolems = 12;
 
-                for (int index = 0; index < greenGolemList.Count; index++)
+                for (int index = 0; index < GreenGolemList.Count; index++)
                 {
-                    greenGolemList[index].gameObject.SetActive(true);
+                    GreenGolemList[index].gameObject.SetActive(true);
                 }
             }
 
@@ -364,24 +364,24 @@ public class GameManager : MonoBehaviour
             {
                 maxGolems = 16;
 
-                for (int index = 0; index < greenGolemList.Count; index++)
+                for (int index = 0; index < GreenGolemList.Count; index++)
                 {
-                    greenGolemList[index].gameObject.SetActive(true);
+                    GreenGolemList[index].gameObject.SetActive(true);
                 }
 
-                for (int index = 0; index < purpleGolemList.Count; index++)
+                for (int index = 0; index < PurpleGolemList.Count; index++)
                 {
-                    purpleGolemList[index].gameObject.SetActive(true);
+                    PurpleGolemList[index].gameObject.SetActive(true);
                 }
             }
 
             AudioListener.volume = 1;
 
             Time.timeScale = 1;
-            pauseObject.SetActive(false);
+            _PauseObject.SetActive(false);
             gamePaused = false;
 
-            listSorted = true;
+            _listSorted = true;
         }
     }
 

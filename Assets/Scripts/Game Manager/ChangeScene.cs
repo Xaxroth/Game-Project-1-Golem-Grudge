@@ -6,11 +6,11 @@ using UnityEngine.UI;
 using TMPro;
 public class ChangeScene : MonoBehaviour
 {
-    [SerializeField] private TMP_Dropdown playerSelect;
+    public TMP_Dropdown _PlayerSelect;
 
     public void StartGame()
     {
-        switch (playerSelect.value)
+        switch (_PlayerSelect.value)
         {
             case 0:
                 GameManager.numberOfPlayers = 2;
@@ -27,6 +27,11 @@ public class ChangeScene : MonoBehaviour
         }
 
         SceneManager.LoadScene(0);
+    }
+
+    public void HandleInputData(int value)
+    {
+
     }
 
     public void ExitApplication()

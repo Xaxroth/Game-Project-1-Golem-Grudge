@@ -7,7 +7,6 @@ using TMPro;
 
 public class PauseScreenScript : MonoBehaviour
 {
-
     public void Update()
     {
         Cursor.lockState = CursorLockMode.None;
