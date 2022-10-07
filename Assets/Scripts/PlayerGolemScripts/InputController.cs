@@ -118,7 +118,7 @@ public class InputController : MonoBehaviour
         if (canBeControlled && beingControlled && !GameManager.actionHappening)
         {
             var moveVector = new Vector3(moveValue.x, 0, moveValue.y);
-            Debug.Log("movevector" + moveVector);
+
             transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, Camera.main.transform.eulerAngles.y, transform.rotation.eulerAngles.z);
 
             if (canMove)

@@ -219,7 +219,7 @@ GameObject:
   - component: {fileID: 2005898724232000248}
   - component: {fileID: 2005898725193892814}
   m_Layer: 0
-  m_Name: FireGolem1
+  m_Name: GolemBase
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

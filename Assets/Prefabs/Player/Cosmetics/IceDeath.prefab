@@ -9,8 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 952102439389575874}
+  - component: {fileID: -8360267559574309557}
   m_Layer: 0
-  m_Name: LifeDeath
+  m_Name: IceDeath
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -33,6 +34,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-8360267559574309557
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 173977136114186571}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 674da3fee81e36b43acc06deccc3cd44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &792149044565852434
 GameObject:
   m_ObjectHideFlags: 0
@@ -1398,9 +1411,9 @@ ParticleSystem:
       maxColor: {r: 1, g: 1, b: 1, a: 1}
       maxGradient:
         serializedVersion: 2
-        key0: {r: 0, g: 1, b: 0.5223286, a: 0}
-        key1: {r: 0, g: 1, b: 0.35566998, a: 0.42745098}
-        key2: {r: 0, g: 0.5377358, b: 0.17566122, a: 0.7411765}
+        key0: {r: 0, g: 1, b: 0.8322332, a: 0}
+        key1: {r: 0, g: 0.58446574, b: 1, a: 0.42745098}
+        key2: {r: 0, g: 0.40163708, b: 1, a: 0.7411765}
         key3: {r: 0, g: 0.2404828, b: 1, a: 0}
         key4: {r: 1, g: 0.29948577, b: 0, a: 0}
         key5: {r: 0, g: 0, b: 0, a: 0}
@@ -11095,9 +11108,9 @@ ParticleSystem:
       maxColor: {r: 1, g: 1, b: 1, a: 1}
       maxGradient:
         serializedVersion: 2
-        key0: {r: 0, g: 1, b: 0.5223286, a: 0}
-        key1: {r: 0, g: 1, b: 0.35566998, a: 0.42745098}
-        key2: {r: 0, g: 0.5377358, b: 0.17566122, a: 0.7411765}
+        key0: {r: 0, g: 1, b: 0.8322332, a: 0}
+        key1: {r: 0, g: 0.58446574, b: 1, a: 0.42745098}
+        key2: {r: 0, g: 0.40163708, b: 1, a: 0.7411765}
         key3: {r: 0, g: 0.2404828, b: 1, a: 0}
         key4: {r: 1, g: 0.29948577, b: 0, a: 0}
         key5: {r: 0, g: 0, b: 0, a: 0}
